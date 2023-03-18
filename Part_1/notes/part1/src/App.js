@@ -9,7 +9,28 @@
 //   );
 // };
 
-const App = (props) => {
+import { useState } from "react";
+
+const Display = ({ counter }) => <div>{counter}</div>;
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+);
+const App = () => {
+  const [counter, setCounter] = useState(0);
+
+  const increaseByOne = () => setCounter(counter + 1);
+  const setToZero = () => setCounter(0);
+  const decreaseByOne = () => setCounter(counter - 1);
+
+  return (
+    <div>
+      <Display counter={counter} />
+      <Button handleClick={increaseByOne} text="plus" />
+      <Button handleClick={setToZero} text="zero" />
+      <Button handleClick={decreaseByOne} text="minus" />
+    </div>
+  );
   // const name = "Peter";
   // const age = 10;
   // return (
@@ -20,9 +41,6 @@ const App = (props) => {
   //     <Hello name="Crusty" />
   //   </div>
   // );
-
-  const { counter } = props;
-  return <div>{counter}</div>;
 };
 
 export default App;
