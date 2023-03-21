@@ -19,7 +19,7 @@ const Votes = (props) => {
 
 const MostVoted = (props) => {
   const most = props.anecdotes[props.mV];
-  console.log("most" + most);
+  console.log("most: " + most);
   return (
     <div>
       <p>{most}</p>
@@ -45,6 +45,9 @@ const App = () => {
 
   const setRandom = () => {
     const newEntry = getRandomInt(anecdotes.length);
+    if (newEntry === selected) {
+      return setRandom();
+    }
     console.log("anecdote selected = " + newEntry);
     setSelected(newEntry);
   };
