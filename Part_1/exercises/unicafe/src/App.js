@@ -77,7 +77,10 @@ const Statistics = (props) => {
         <thead>
           <tr>
             <td>
-              <StatisticsLine text="Percent Good" count={good / total} />
+              <StatisticsLine
+                text="Percent Good"
+                count={(good / total) * 100 + "%"}
+              />
             </td>
           </tr>
         </thead>
