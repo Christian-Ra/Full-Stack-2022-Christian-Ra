@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import ContactList from "./components/ContactList";
 import InputBar from "./components/InputBar";
 import SubmissionForm from "./components/SubmissionForm";
@@ -6,16 +7,25 @@ import SubmissionForm from "./components/SubmissionForm";
 const App = () => {
   //! vvvvv STATES vvvv
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
+    //? vvv Following Exercise 2.10, Objects moved to json file
+    // { name: "Arto Hellas", number: "040-123456", id: 1 },
+    // { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+    // { name: "Dan Abramov", number: "12-43-234345", id: 3 },
+    // { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
   // console.log(JSON.stringify(persons));
+
+  useEffect(() => {
+    console.log("effect");
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("promise fulfilled");
+      setPersons(response.data);
+    });
+  }, []);
 
   //! vvvvv Event Handlers vvvvv
   const handleNameChange = (event) => {

@@ -11,6 +11,9 @@ const App = () => {
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
 
+  //* vvv Following function is executed immediately after rendering. The executions of the function results in
+  //* effect being printed to the console, and the command axios.get initiates the fecthing of the data from
+  //* the server as well as registers the following function as an event handler for the operation
   useEffect(() => {
     console.log("effect");
     axios.get("http://localhost:3001/notes").then((response) => {
