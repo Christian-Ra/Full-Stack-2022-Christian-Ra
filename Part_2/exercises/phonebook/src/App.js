@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import contactService from "./services/persons";
 import ContactList from "./components/ContactList";
 import InputBar from "./components/InputBar";
@@ -16,7 +15,6 @@ const App = () => {
   // console.log(JSON.stringify(persons));
 
   useEffect(() => {
-    console.log("effect");
     contactService.getAll().then((initialContacts) => {
       setPersons(initialContacts);
     });
@@ -49,22 +47,40 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
+      // id: persons.length + 1, better to let server generate id's for our resources
     };
-    console.log("Contact.values list: ", Object.values(persons));
     if (checkExistingContacts(newPerson, contactList)) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, do you want to update with new number: ${newNumber}`
+        )
+      ) {
+        const contact = persons.find(
+          (p) => p.name.toLowerCase() === newName.toLowerCase()
+        );
+        const modifiedContact = { ...contact, number: newNumber };
+
+        contactService
+          .update(contact.id, modifiedContact)
+          .then((updatedContacts) => {
+            setPersons(
+              persons.map((p) => (p.id !== contact.id ? p : updatedContacts))
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      }
+    } else {
+      contactService.create(newPerson).then((returnedContact) => {
+        setPersons(persons.concat(returnedContact));
+        setNewName("");
+        setNewNumber("");
+      });
     }
-    contactService.create(newPerson).then((returnedContact) => {
-      setPersons(persons.concat(returnedContact));
-      setNewName("");
-      setNewNumber("");
-    });
   };
 
   const deleteContact = (id) => {
     const contact = persons.find((p) => p.id === id);
-    console.log("delete contact called with ID: ", id);
     const name = contact.name;
     if (window.confirm(`Do you really want to remove ${name}`)) {
       contactService
