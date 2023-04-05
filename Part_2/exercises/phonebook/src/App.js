@@ -1,18 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import contactService from "./services/persons";
 import ContactList from "./components/ContactList";
 import InputBar from "./components/InputBar";
 import SubmissionForm from "./components/SubmissionForm";
 
 const App = () => {
-  //! vvvvv STATES vvvv
-  const [persons, setPersons] = useState([
-    //? vvv Following Exercise 2.10, Objects moved to json file
-    // { name: "Arto Hellas", number: "040-123456", id: 1 },
-    // { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    // { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    // { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  //! STATES
+  const [persons, setPersons] = useState([]);
+  //? Following Exercise 2.10, Objects moved to json file
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
@@ -21,24 +17,29 @@ const App = () => {
 
   useEffect(() => {
     console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      setPersons(response.data);
+    contactService.getAll().then((initialContacts) => {
+      setPersons(initialContacts);
     });
   }, []);
 
-  //! vvvvv Event Handlers vvvvv
+  //! Event Handlers
+
   const handleNameChange = (event) => {
-    // console.log(event.target.value);
     setNewName(event.target.value);
   };
+
   const handleNumberChange = (event) => {
-    // console.log(event.target.value);
     setNewNumber(event.target.value);
   };
+
   const handleFilterChange = (event) => {
-    // console.log(event.target.value);
     setFilter(event.target.value);
+  };
+
+  const checkExistingContacts = (contact, contactList) => {
+    return JSON.stringify(contactList)
+      .toLowerCase()
+      .includes(JSON.stringify(contact.name).toLowerCase());
   };
 
   const addContact = (event) => {
@@ -51,26 +52,33 @@ const App = () => {
       id: persons.length + 1,
     };
     console.log("Contact.values list: ", Object.values(persons));
-    if (
-      JSON.stringify(contactList)
-        .toLowerCase()
-        .includes(JSON.stringify(newPerson.name).toLowerCase())
-    ) {
+    if (checkExistingContacts(newPerson, contactList)) {
       alert(`${newName} is already added to phonebook`);
-    } else {
-      setPersons(persons.concat(newPerson));
+    }
+    contactService.create(newPerson).then((returnedContact) => {
+      setPersons(persons.concat(returnedContact));
       setNewName("");
       setNewNumber("");
-    }
-
-    // if (persons.name.includes(newPerson.name)) {     //* Object comparison should be done doing either
-    //   alert(`${newName} is already added to phonebook`); //* deep or shallow key/value check
-    // } else {
-    //   setPersons(persons.concat(newPerson));
-    //   setNewName("");
-    // }
+    });
   };
 
+  const deleteContact = (id) => {
+    const contact = persons.find((p) => p.id === id);
+    console.log("delete contact called with ID: ", id);
+    const name = contact.name;
+    if (window.confirm(`Do you really want to remove ${name}`)) {
+      contactService
+        .remove(id)
+        .then(setPersons(persons.filter((person) => person.id !== id)));
+    }
+  };
+
+  // if (persons.name.includes(newPerson.name)) {     //* Object comparison should be done doing either
+  //   alert(`${newName} is already added to phonebook`); //* deep or shallow key/value check
+  // } else {
+  //   setPersons(persons.concat(newPerson));
+  //   setNewName("");
+  // }
   const contactsToShow =
     filter === ""
       ? persons
@@ -89,7 +97,10 @@ const App = () => {
         handleNumberChange={handleNumberChange}
         addContact={addContact}
       ></SubmissionForm>
-      <ContactList contactsToShow={contactsToShow}></ContactList>
+      <ContactList
+        contactsToShow={contactsToShow}
+        deleteContact={deleteContact}
+      ></ContactList>
     </div>
   );
 };
