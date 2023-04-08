@@ -3,6 +3,7 @@ import contactService from "./services/persons";
 import ContactList from "./components/ContactList";
 import InputBar from "./components/InputBar";
 import SubmissionForm from "./components/SubmissionForm";
+import Notification from "./components/Notification";
 
 const App = () => {
   //! STATES
@@ -12,6 +13,9 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [alert, setAlert] = useState(null);
+  const [isSuccessfulAction, setAction] = useState(true);
+  const timeOut = 5000;
   // console.log(JSON.stringify(persons));
 
   useEffect(() => {
@@ -34,6 +38,11 @@ const App = () => {
     setFilter(event.target.value);
   };
 
+  const clearFields = () => {
+    setNewNumber("");
+    setNewName("");
+  };
+
   const checkExistingContacts = (contact, contactList) => {
     return JSON.stringify(contactList)
       .toLowerCase()
@@ -43,7 +52,6 @@ const App = () => {
   const addContact = (event) => {
     event.preventDefault();
     const contactList = Object.values(persons);
-    // console.log("button clicked", event.target);
     const newPerson = {
       name: newName,
       number: newNumber,
@@ -66,15 +74,37 @@ const App = () => {
             setPersons(
               persons.map((p) => (p.id !== contact.id ? p : updatedContacts))
             );
-            setNewName("");
-            setNewNumber("");
+            clearFields();
+            setAlert(`${newName} contact successfully updated`);
+            setAction(true);
+            setTimeout(() => {
+              setAlert(null);
+            }, timeOut);
+          })
+          .catch((error) => {
+            console.log("fail");
+            setPersons(persons.filter((p) => p.id !== contact.id));
+            clearFields();
+            setAction(false);
+            setAlert(
+              `${newName} has already been removed from contacts. Update unsuccessful`,
+              false
+            );
+            setTimeout(() => {
+              setAlert(null);
+            }, timeOut);
+            //TODO: Create Error handling for updating deleted contacts with custom alert style
           });
       }
     } else {
       contactService.create(newPerson).then((returnedContact) => {
         setPersons(persons.concat(returnedContact));
-        setNewName("");
-        setNewNumber("");
+        clearFields();
+        setAction(true);
+        setAlert(`${newName} contact successfully Added`);
+        setTimeout(() => {
+          setAlert(null);
+        }, timeOut);
       });
     }
   };
@@ -86,6 +116,11 @@ const App = () => {
       contactService
         .remove(id)
         .then(setPersons(persons.filter((person) => person.id !== id)));
+      setAction(false);
+      setAlert(`${name} has been successfully deleted`);
+      setTimeout(() => {
+        setAlert(null);
+      }, 5000);
     }
   };
 
@@ -104,6 +139,10 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification
+        notification={alert}
+        successAction={isSuccessfulAction}
+      ></Notification>
       Filter Search:
       <InputBar input={filter} eventHandler={handleFilterChange}></InputBar>
       <SubmissionForm
