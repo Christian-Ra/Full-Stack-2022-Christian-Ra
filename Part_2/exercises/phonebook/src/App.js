@@ -93,7 +93,6 @@ const App = () => {
             setTimeout(() => {
               setAlert(null);
             }, timeOut);
-            //TODO: Create Error handling for updating deleted contacts with custom alert style
           });
       }
     } else {
