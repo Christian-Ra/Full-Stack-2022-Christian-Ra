@@ -1,7 +1,9 @@
 import Button from "./Button";
 import CountryInfo from "./CountryInfo";
-const Country = ({ countries, countryButton }) => {
-  console.log("countries: ", countries);
+import CountryWeather from "./CountryWeather";
+
+const Country = ({ countries, countryButton, weatherInfo }) => {
+  console.log("countries list: ", countries);
   const country = countries[0];
   if (countries.length === 1) {
     const name = country.name.common;
@@ -20,6 +22,7 @@ const Country = ({ countries, countryButton }) => {
           flag={flag}
           flagAlt={flagAlt}
         ></CountryInfo>
+        <CountryWeather weatherData={weatherInfo}></CountryWeather>
       </div>
     );
   } else if (countries.length <= 10) {

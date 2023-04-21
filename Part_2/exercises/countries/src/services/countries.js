@@ -1,15 +1,31 @@
 import axios from "axios";
-const baseUrl = "https://restcountries.com/v3.1";
+const baseCountryUrl = "https://restcountries.com/v3.1";
+const baseWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?";
+const api_key = process.env.REACT_APP_API_KEY;
 
-const getAllCountries = () => {
-  const request = axios.get(`${baseUrl}/all`);
-  return request.then((response) => response.data);
+const getAllCountries = async () => {
+  const request = axios.get(`${baseCountryUrl}/all`);
+  const response = await request;
+  return response.data;
 };
 
-const getCountryByName = (search) => {
-  console.log("request with, ", search);
-  const request = axios.get(`${baseUrl}/name/${search}`);
-  return request.then((response) => response.data);
+const getCountryByName = async (search) => {
+  const request = axios.get(`${baseCountryUrl}/name/${search}`);
+  const response = await request;
+  return response.data;
 };
 
-export default { getAllCountries, getCountryByName };
+const getCountryWeatherData = async (capitalLat, capitalLon) => {
+  console.log("Searching lat and long with : ", capitalLat, capitalLon);
+  const request = axios.get(
+    `${baseWeatherUrl}lat=${capitalLat}&lon=${capitalLon}&units=imperial&appid=${api_key}`
+  );
+  const response = await request;
+  return response.data;
+};
+
+export default {
+  getAllCountries,
+  getCountryByName,
+  getCountryWeatherData,
+};

@@ -18,6 +18,7 @@ const CountryInfo = ({
         ))}
       </ul>
       <img src={flag} alt={flagAlt}></img>
+      <h1>Weather in {capital}</h1>
     </div>
   );
 };
