@@ -28,7 +28,7 @@ const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("some error happened...");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   //* vvv Following function is executed immediately after rendering. The executions of the function results in
   //* effect being printed to the console, and the command axios.get initiates the fecthing of the data from
