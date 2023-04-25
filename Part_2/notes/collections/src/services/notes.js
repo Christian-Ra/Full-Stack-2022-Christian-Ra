@@ -1,5 +1,7 @@
 import axios from "axios";
-const baseUrl = "http://localhost:3001/api/notes";
+//! Production moved to backend to form single page app, as such, routing can be relative
+// const baseUrl = "http://localhost:3001/api/notes";
+const baseUrl = "/api/notes";
 
 const getAll = async () => {
   //   return axios.get(baseUrl);
