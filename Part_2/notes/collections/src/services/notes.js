@@ -3,6 +3,12 @@ import axios from "axios";
 // const baseUrl = "http://localhost:3001/api/notes";
 const baseUrl = "/api/notes";
 
+let token = null;
+
+const setToken = (newToken) => {
+  token = `bearer ${newToken}`;
+};
+
 const getAll = async () => {
   //   return axios.get(baseUrl);
   //? Since response data is all we care about, we can extract it like so
@@ -17,9 +23,11 @@ const getAll = async () => {
 };
 
 const create = async (newObject) => {
-  //   return axios.post(baseUrl, newObject);
-  const request = axios.post(baseUrl, newObject);
-  const response = await request;
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.post(baseUrl, newObject, config);
   return response.data;
 };
 
@@ -34,4 +42,5 @@ export default {
   getAll,
   create,
   update,
+  setToken,
 };
