@@ -87,8 +87,7 @@ const App = () => {
             clearFields();
             setAction(false);
             setAlert(
-              `${newName} has already been removed from contacts. Update unsuccessful`,
-              false
+              `${newName} has already been removed from contacts. Update unsuccessful`
             );
             setTimeout(() => {
               setAlert(null);
