@@ -9,7 +9,7 @@ const LoginForm = ({
     <div>
       <h2>Login</h2>
 
-      <form on onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div>
           Username
           <input value={username} onChange={handleUsernameChange} />

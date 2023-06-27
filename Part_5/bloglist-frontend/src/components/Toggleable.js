@@ -10,9 +10,6 @@ const Togglable = forwardRef((props, refs) => {
     setVisible(!visible);
   };
 
-  //? The useImperativeHandle function is a react hook, that is used for defining functions in a component,
-  //? which can be invoked from outside of the component
-
   useImperativeHandle(refs, () => {
     return {
       toggleVisibility,
