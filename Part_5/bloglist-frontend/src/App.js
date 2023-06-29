@@ -61,6 +61,24 @@ const App = () => {
     }, timeOut);
   };
 
+  const addLike = async (id) => {
+    const blog = blogs.find((b) => b.id === id);
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    console.log("updated blog", updatedBlog);
+    const returnedBlog = await blogService.addLike(id, updatedBlog);
+    console.log("blug upon running post: ", returnedBlog);
+    setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
+    // blogService.addLike(id, updatedBlog).then((returnedBlog) => {
+    //   console.log(returnedBlog);
+    //   setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
+    // });
+    setNotification(`Liked ${blog.title} by ${blog.author}`);
+    setAction(true);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
+
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility();
     blogService
@@ -84,6 +102,19 @@ const App = () => {
           setNotification(null);
         }, timeOut);
       });
+  };
+
+  const deleteBlog = async (id) => {
+    const blog = blogs.find((b) => b.id === id);
+    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.deleteBlog(id);
+      setBlogs(blogs.filter((b) => b.id !== id));
+      setAction(true);
+      setNotification(`Blog successfully removed`);
+      setTimeout(() => {
+        setNotification(null);
+      }, timeOut);
+    }
   };
 
   useEffect(() => {
@@ -128,6 +159,10 @@ const App = () => {
     </Togglable>
   );
 
+  const sortedBlogs = () => {
+    return blogs.sort((a, b) => b.likes - a.likes);
+  };
+
   return (
     <div>
       <h2>blogs</h2>
@@ -141,9 +176,15 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
-          {blogs.map((blog) => (
+          {sortedBlogs().map((blog) => (
             <div>
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                like={() => addLike(blog.id)}
+                deleteBlog={() => deleteBlog(blog.id)}
+                user={user}
+              />
             </div>
           ))}
         </div>
