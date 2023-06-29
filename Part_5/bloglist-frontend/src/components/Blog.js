@@ -1,22 +1,22 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 const Blog = ({ blog, like, deleteBlog, user }) => {
-  const [blogView, toggleBlogView] = useState(false);
+  const [blogView, toggleBlogView] = useState(false)
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    verticalAlign: "center",
-    border: "solid",
+    verticalAlign: 'center',
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
   return (
     <div>
       <div style={blogStyle}>
         {blog.title} : {blog.author}
         <br></br>
         <button onClick={() => toggleBlogView(!blogView)}>
-          {blogView ? "Hide" : "Show"}
+          {blogView ? 'Hide' : 'Show'}
         </button>
         {blogView && (
           <div>
@@ -35,7 +35,7 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

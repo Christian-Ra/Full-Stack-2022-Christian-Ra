@@ -1,138 +1,138 @@
-import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
-import Notification from "./components/Notification";
-import LoginForm from "./components/LoginForm";
-import BlogForm from "./components/BlogForm";
-import Togglable from "./components/Toggleable";
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
+import loginService from './services/login'
+import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Toggleable'
 
 const App = () => {
-  const blogFormRef = useRef();
+  const blogFormRef = useRef()
 
-  const [blogs, setBlogs] = useState([]);
-  const [notification, setNotification] = useState(null);
-  const [isSuccessfulAction, setAction] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [loginVisible, setLoginVisible] = useState(false);
-  const timeOut = 5000;
+  const [blogs, setBlogs] = useState([])
+  const [notification, setNotification] = useState(null)
+  const [isSuccessfulAction, setAction] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
+  const timeOut = 5000
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const user = await loginService.login({
         username,
         password,
-      });
+      })
 
-      console.log(user.token);
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      console.log(user.token)
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-      setNotification(`${user.name} successfully logged in`);
-      setAction(true);
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      setNotification(`${user.name} successfully logged in`)
+      setAction(true)
       setTimeout(() => {
-        setNotification(null);
-      }, timeOut);
+        setNotification(null)
+      }, timeOut)
     } catch (exception) {
-      setNotification("Invalid Credentials");
-      setAction(false);
+      setNotification('Invalid Credentials')
+      setAction(false)
       setTimeout(() => {
-        setNotification(null);
-      }, timeOut);
+        setNotification(null)
+      }, timeOut)
     }
-  };
+  }
 
   const handleLogout = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    setNotification(`${user.name} successfully logged out`);
-    setAction(true);
-    setUser(null);
-    window.localStorage.removeItem("loggedBlogAppUser");
+    setNotification(`${user.name} successfully logged out`)
+    setAction(true)
+    setUser(null)
+    window.localStorage.removeItem('loggedBlogAppUser')
     setTimeout(() => {
-      setNotification(null);
-    }, timeOut);
-  };
+      setNotification(null)
+    }, timeOut)
+  }
 
   const addLike = async (id) => {
-    const blog = blogs.find((b) => b.id === id);
-    const updatedBlog = { ...blog, likes: blog.likes + 1 };
-    console.log("updated blog", updatedBlog);
-    const returnedBlog = await blogService.addLike(id, updatedBlog);
-    console.log("blug upon running post: ", returnedBlog);
-    setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
+    const blog = blogs.find((b) => b.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }
+    console.log('updated blog', updatedBlog)
+    const returnedBlog = await blogService.addLike(id, updatedBlog)
+    console.log('blug upon running post: ', returnedBlog)
+    setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)))
     // blogService.addLike(id, updatedBlog).then((returnedBlog) => {
     //   console.log(returnedBlog);
     //   setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
     // });
-    setNotification(`Liked ${blog.title} by ${blog.author}`);
-    setAction(true);
+    setNotification(`Liked ${blog.title} by ${blog.author}`)
+    setAction(true)
     setTimeout(() => {
-      setNotification(null);
-    }, 5000);
-  };
+      setNotification(null)
+    }, 5000)
+  }
 
   const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility();
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
+        setBlogs(blogs.concat(returnedBlog))
         setNotification(
           `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`
-        );
-        setAction(true);
+        )
+        setAction(true)
         setTimeout(() => {
-          setNotification(null);
-        }, timeOut);
+          setNotification(null)
+        }, timeOut)
       })
       .catch((error) => {
         setNotification(
-          `Blog creation failed, please ensure a valid title and URL are included`
-        );
-        setAction(false);
+          'Blog creation failed, please ensure a valid title and URL are included'
+        )
+        setAction(false)
         setTimeout(() => {
-          setNotification(null);
-        }, timeOut);
-      });
-  };
+          setNotification(null)
+        }, timeOut)
+      })
+  }
 
   const deleteBlog = async (id) => {
-    const blog = blogs.find((b) => b.id === id);
+    const blog = blogs.find((b) => b.id === id)
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.deleteBlog(id);
-      setBlogs(blogs.filter((b) => b.id !== id));
-      setAction(true);
-      setNotification(`Blog successfully removed`);
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter((b) => b.id !== id))
+      setAction(true)
+      setNotification('Blog successfully removed')
       setTimeout(() => {
-        setNotification(null);
-      }, timeOut);
+        setNotification(null)
+      }, timeOut)
     }
-  };
+  }
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   const loginForm = () => {
-    const hideWhenVisible = { display: loginVisible ? "none" : "" };
-    const showWhenVisible = { display: loginVisible ? "" : "none" };
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
     return (
       <div>
@@ -150,18 +150,18 @@ const App = () => {
           <button onClick={() => setLoginVisible(false)}>Cancel</button>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   const blogForm = () => (
-    <Togglable buttonLabel='Add New Blog' ref={blogFormRef}>
+    <Togglable buttonLabel="Add New Blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog} />
     </Togglable>
-  );
+  )
 
   const sortedBlogs = () => {
-    return blogs.sort((a, b) => b.likes - a.likes);
-  };
+    return blogs.sort((a, b) => b.likes - a.likes)
+  }
 
   return (
     <div>
@@ -177,6 +177,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
           {sortedBlogs().map((blog) => (
+            // eslint-disable-next-line react/jsx-key
             <div>
               <Blog
                 key={blog.id}
@@ -190,11 +191,11 @@ const App = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 window.onunload = () => {
-  window.localStorage.removeItem("loggedBlogAppUser");
-};
+  window.localStorage.removeItem('loggedBlogAppUser')
+}
 
-export default App;
+export default App

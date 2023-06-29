@@ -1,22 +1,22 @@
-import "../index.css";
+import '../index.css'
 
 const Notification = ({ message, successAction }) => {
   if (message === null) {
-    return null;
+    return null
   }
 
   const successAlert = {
-    color: "green",
-  };
+    color: 'green',
+  }
   const failAlert = {
-    color: "red",
-  };
+    color: 'red',
+  }
 
   return (
-    <div className='notif' style={successAction ? successAlert : failAlert}>
+    <div className="notif" style={successAction ? successAlert : failAlert}>
       {message}
     </div>
-  );
-};
+  )
+}
 
-export default Notification;
+export default Notification
