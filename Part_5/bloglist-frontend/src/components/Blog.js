@@ -12,14 +12,14 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
   }
   return (
     <div>
-      <div style={blogStyle}>
+      <div style={blogStyle} className="shownBlogInfo">
         {blog.title} : {blog.author}
         <br></br>
         <button onClick={() => toggleBlogView(!blogView)}>
           {blogView ? 'Hide' : 'Show'}
         </button>
         {blogView && (
-          <div>
+          <div className="hiddenBlogInfo">
             {blog.url}
             <p>
               Likes {blog.likes}
