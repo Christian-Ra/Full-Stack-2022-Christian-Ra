@@ -13,13 +13,8 @@ const getAll = async () => {
   //   return axios.get(baseUrl);
   //? Since response data is all we care about, we can extract it like so
   const request = axios.get(baseUrl)
-  const nonExisting = {
-    id: 10000,
-    content: 'This note is not saved to server',
-    important: true,
-  }
   const response = await request
-  return response.data.concat(nonExisting)
+  return response.data
 }
 
 const create = async (newObject) => {
