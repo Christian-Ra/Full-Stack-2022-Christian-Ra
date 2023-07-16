@@ -137,7 +137,12 @@ const App = () => {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>Log In</button>
+          <button
+            className="open-login-button"
+            onClick={() => setLoginVisible(true)}
+          >
+            Log In
+          </button>
         </div>
         <div style={showWhenVisible}>
           <LoginForm
@@ -173,7 +178,7 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <div>
-          <p>{user.name} logged in</p>
+          <p className="user-signed-in">{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
           {sortedBlogs().map((blog) => (
