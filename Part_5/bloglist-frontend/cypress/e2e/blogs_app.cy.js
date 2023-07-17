@@ -116,6 +116,22 @@ describe("blog app", () => {
           .parent()
           .should("not.have.text", "Delete Blog");
       });
+
+      it("blogs are properly sorted base on number of likes", function () {
+        cy.get('[data-cy="blog-list"]').as("blogs");
+        cy.get("@blogs").contains("third blog").find("button").click();
+        cy.get('[data-cy="like-button"]').click();
+        cy.wait(100);
+        cy.get("@blogs").eq(0).should("contain", "third blog");
+
+        cy.get("@blogs").contains("second blog").find("button").click();
+        cy.get('[data-cy="like-button"').click();
+        cy.wait(100);
+        cy.get("@blogs").contains("second blog").find("button").click();
+        cy.get('[data-cy="like-button"').click();
+        cy.get("@blogs").eq(0).should("contain", "second blog");
+        cy.get("@blogs").eq(1).should("contain", "third blog");
+      });
     });
   });
 });

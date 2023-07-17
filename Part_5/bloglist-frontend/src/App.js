@@ -166,7 +166,7 @@ const App = () => {
   )
 
   const sortedBlogs = () => {
-    return blogs.sort((a, b) => b.likes - a.likes)
+    return blogs.toSorted((a, b) => b.likes - a.likes)
   }
 
   return (
