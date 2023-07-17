@@ -14,7 +14,6 @@ describe("blog app", () => {
     };
     cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
     cy.visit("");
-    cy.restoreLocalStorage();
   });
   it("login form can be viewed", function () {
     cy.contains("blogs");
@@ -85,13 +84,37 @@ describe("blog app", () => {
         });
       });
 
-      it.only("can add a like to a blog", function () {
+      it("can add a like to a blog", function () {
         cy.contains("second blog").parent().find("button").click();
         cy.get('[data-cy="like-button"]').click();
         cy.wait(100);
         cy.get('[data-cy="blog-list"]').as("blogs");
         cy.get("@blogs").contains("second blog").find("button").click();
         cy.get('[data-cy="likes"]').should("include.text", "1");
+      });
+
+      it("blog can be deleted by creating user", function () {
+        //test delete functionality
+        cy.contains("third blog").parent().find("button").click();
+        cy.get('[data-cy="delete-blog-button"]').click();
+        cy.get(".notif")
+          .should("contain", "Blog successfully removed")
+          .and("have.css", "color", "rgb(0, 128, 0)");
+        cy.get('[data-cy="blog-list"]').as("blogs");
+        cy.get("@blogs").children().should("have.length", 2);
+
+        //test delete not allowed for non-creating user
+        const user = {
+          name: "invalidUser",
+          username: "testUser",
+          password: "gioSmells",
+        };
+        cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
+        cy.login({ username: "testUser", password: "gioSmells" });
+        cy.contains("second blog").parent().find("button").click();
+        cy.contains("second blog")
+          .parent()
+          .should("not.have.text", "Delete Blog");
       });
     });
   });
