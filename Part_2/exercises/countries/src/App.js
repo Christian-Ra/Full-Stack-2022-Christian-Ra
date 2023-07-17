@@ -62,7 +62,6 @@ const App = () => {
           country.capitalInfo.latlng[1]
         )
         .then((weatherInfo) => {
-          console.log("Got weather Info, ", weatherInfo);
           setWeather(weatherInfo);
         });
     } else {
