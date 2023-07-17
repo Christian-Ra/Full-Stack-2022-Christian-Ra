@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, like, deleteBlog, user }) => {
-  const [blogView, toggleBlogView] = useState(false)
+  const [blogView, setBlogView] = useState(false)
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -10,25 +11,38 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
     borderWidth: 1,
     marginBottom: 5,
   }
+
+  const toggleBlogView = () => {
+    setBlogView(!blogView)
+  }
+
   return (
     <div>
-      <div style={blogStyle} className="shownBlogInfo">
+      <div
+        data-cy="shown-blog-info"
+        style={blogStyle}
+        className="shownBlogInfo"
+      >
         {blog.title} : {blog.author}
         <br></br>
-        <button onClick={() => toggleBlogView(!blogView)}>
+        <button data-cy="toggle-blog-button" onClick={toggleBlogView}>
           {blogView ? 'Hide' : 'Show'}
         </button>
         {blogView && (
-          <div className="hiddenBlogInfo">
+          <div data-cy="hidden-blog-info" className="hiddenBlogInfo">
             {blog.url}
-            <p>
+            <p data-cy="likes">
               Likes {blog.likes}
-              <button onClick={like}>Like</button>
+              <button data-cy="like-button" onClick={like}>
+                Like
+              </button>
             </p>
             {blog.user.name}
             {blog.user.username === user.username && (
               <div>
-                <button onClick={deleteBlog}>Delete Blog</button>
+                <button data-cy="delete-blog-button" onClick={deleteBlog}>
+                  Delete Blog
+                </button>
               </div>
             )}
           </div>
@@ -36,6 +50,11 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
       </div>
     </div>
   )
+}
+
+Blog.propTypes = {
+  like: PropTypes.func.isRequired,
+  blog: PropTypes.object.isRequired,
 }
 
 export default Blog

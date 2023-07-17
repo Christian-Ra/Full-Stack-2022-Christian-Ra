@@ -93,6 +93,7 @@ const App = () => {
           setNotification(null)
         }, timeOut)
       })
+      // eslint-disable-next-line no-unused-vars
       .catch((error) => {
         setNotification(
           'Blog creation failed, please ensure a valid title and URL are included'
@@ -183,7 +184,7 @@ const App = () => {
           {blogForm()}
           {sortedBlogs().map((blog) => (
             // eslint-disable-next-line react/jsx-key
-            <div>
+            <div data-cy="blog-list">
               <Blog
                 key={blog.id}
                 blog={blog}
@@ -199,8 +200,8 @@ const App = () => {
   )
 }
 
-window.onunload = () => {
-  window.localStorage.removeItem('loggedBlogAppUser')
-}
+// window.onunload = () => {
+//   window.localStorage.removeItem('loggedBlogAppUser')
+// }
 
 export default App

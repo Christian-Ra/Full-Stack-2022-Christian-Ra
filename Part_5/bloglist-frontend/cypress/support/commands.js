@@ -29,7 +29,21 @@ Cypress.Commands.add("login", ({ username, password }) => {
     username,
     password,
   }).then(({ body }) => {
-    localStorage.setItem("loggedBlogAppUser", JSON.stringify(body));
     cy.visit("");
+    localStorage.setItem("loggedBlogAppUser", JSON.stringify(body));
   });
+});
+
+Cypress.Commands.add("createBlog", ({ title, author, url }) => {
+  cy.request({
+    url: `${Cypress.env("BACKEND")}/blogs`,
+    method: "POST",
+    body: { title, author, url },
+    headers: {
+      Authorization: `bearer ${
+        JSON.parse(localStorage.getItem("loggedBlogAppUser")).token
+      }`,
+    },
+  });
+  cy.visit("");
 });

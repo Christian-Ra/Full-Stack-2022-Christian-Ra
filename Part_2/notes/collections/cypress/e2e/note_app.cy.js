@@ -47,7 +47,7 @@ describe("Note app", function () {
     cy.get("#login-button").click();
 
     //firefox returns null when searching for border-style css property
-    //one solution would be to check top, bottom, left, adn right border
+    //one solution would be to check top, bottom, left, and right border
     //*solution posted by lblanch on this thread https://github.com/cypress-io/cypress/issues/9349
     cy.get(".error")
       .should("contain", "Wrong Credentials")
