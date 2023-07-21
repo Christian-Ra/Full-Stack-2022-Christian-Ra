@@ -1,5 +1,18 @@
+const initialState = [
+  {
+    content: "reducer defines how redux store works",
+    important: true,
+    id: 1,
+  },
+  {
+    content: "state of store can contain any data",
+    important: false,
+    id: 2,
+  },
+];
+
 //! the reducer we have declared here is bad because it breaks the basic assumption that reducers are PURE functions
-const noteReducer = (state = [], action) => {
+const noteReducer = (state = initialState, action) => {
   // if (action.type === "NEW_NOTE") {
   //   state.push(action.payload);
   //   return state;
