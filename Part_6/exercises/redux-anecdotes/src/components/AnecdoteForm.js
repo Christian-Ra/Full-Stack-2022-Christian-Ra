@@ -1,18 +1,19 @@
 import { useDispatch } from "react-redux";
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import { setNotif, resetNotif } from "../reducers/notifReducer";
+import anecdoteService from "../services/anecdotes";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
-
+    const newAnecdote = await anecdoteService.createNew(content);
     //runs into issue with async race conditions if multiple actions are
     //performed in rapid succession
-    dispatch(createAnecdote(content));
+    dispatch(createAnecdote(newAnecdote));
     dispatch(setNotif(`a new anecdote: ${content}, was added`));
     setTimeout(() => {
       dispatch(resetNotif());
