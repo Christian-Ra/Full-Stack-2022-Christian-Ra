@@ -8,7 +8,8 @@ import { Provider } from "react-redux";
 // import { filterChange } from "./reducers/filterReducer";
 import App from "./App";
 
-import noteReducer from "./reducers/noteReducer";
+import noteService from "./services/notes";
+import noteReducer, { setNotes } from "./reducers/noteReducer";
 import filterReducer from "./reducers/filterReducer";
 
 // const reducer = combineReducers({
@@ -25,6 +26,14 @@ const store = configureStore({
 });
 
 console.log(store.getState());
+noteService.getAll().then((notes) => store.dispatch(setNotes(notes)));
+
+//* Below code is a bit impractical, since multiple action calls are required
+// noteService.getAll().then((notes) =>
+//   notes.forEach((note) => {
+//     store.dispatch(appendNote(note));
+//   })
+// );
 
 // store.subscribe(() => console.log(store.getState()));
 // store.dispatch(filterChange("IMPORTANT"));
