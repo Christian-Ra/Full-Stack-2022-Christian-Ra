@@ -16,4 +16,14 @@ const notifSlice = createSlice({
 });
 
 export const { setNotif, resetNotif } = notifSlice.actions;
+
+export const setNotifWithTimeout = (notif, timeout) => {
+  return (dispatch) => {
+    dispatch(setNotif(notif));
+
+    setTimeout(() => {
+      dispatch(resetNotif());
+    }, timeout);
+  };
+};
 export default notifSlice.reducer;

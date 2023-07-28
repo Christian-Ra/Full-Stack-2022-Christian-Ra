@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { createAnecdote } from "../reducers/anecdoteReducer";
-import { setNotif, resetNotif } from "../reducers/notifReducer";
+import { setNotifWithTimeout } from "../reducers/notifReducer";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -12,12 +12,10 @@ const AnecdoteForm = () => {
     //runs into issue with async race conditions if multiple actions are
     //performed in rapid succession
     dispatch(createAnecdote(content));
-    dispatch(setNotif(`a new anecdote: ${content}, was added`));
-    setTimeout(() => {
-      dispatch(resetNotif());
-    }, 5000);
+    dispatch(
+      setNotifWithTimeout(`a new anecdote: ${content}, was added`, 5000)
+    );
   };
-
   return (
     <form onSubmit={addAnecdote}>
       <input name='anecdote' />
