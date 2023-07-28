@@ -9,10 +9,16 @@ const getAll = async () => {
 };
 
 const createNew = async (content) => {
-  const object = { content, likes: 0 };
+  const object = { content, votes: 0 };
   const response = await axios.post(baseUrl, object);
   return response.data;
 };
 
+const likeAnecdote = async (id, anecdoteObject) => {
+  const request = await axios.put(`${baseUrl}/${id}`, anecdoteObject);
+  const response = await request;
+  return response.data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, createNew };
+export default { getAll, createNew, likeAnecdote };
