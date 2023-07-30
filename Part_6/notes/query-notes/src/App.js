@@ -11,7 +11,8 @@ const App = () => {
   const newNoteMutation = useMutation(createNote, {
     onSuccess: (newNote) => {
       const notes = queryClient.getQueriesData("notes");
-      queryClient.setQueryData("notes", notes.concat(newNote));
+      console.log("notes query", notes);
+      queryClient.setQueryData("notes", notes[0][1].concat(newNote));
       // queryClient.invalidateQueries("notes");
     },
   });

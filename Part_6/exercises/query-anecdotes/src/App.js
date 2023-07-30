@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { getAnecdotes } from "./requests";
+import { getAnecdotes, updateAnecdote } from "./requests";
 
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
@@ -7,8 +7,15 @@ import Notification from "./components/Notification";
 const App = () => {
   const queryClient = useQueryClient();
 
+  const updateVoteMutation = useMutation(updateAnecdote, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("anecdotes");
+    },
+  });
+
   const handleVote = (anecdote) => {
     console.log("vote");
+    updateVoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
   };
 
   const result = useQuery("anecdotes", getAnecdotes);
@@ -16,6 +23,10 @@ const App = () => {
 
   if (result.isLoading) {
     return <div>loading data</div>;
+  }
+
+  if (result.isError) {
+    return <div>anecdote service not available due to problems in server</div>;
   }
   const anecdotes = result.data;
   // const anecdotes = [
