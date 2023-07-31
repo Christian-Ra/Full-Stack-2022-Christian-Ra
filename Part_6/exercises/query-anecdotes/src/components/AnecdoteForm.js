@@ -1,7 +1,12 @@
 import { useQueryClient, useMutation } from "react-query";
 import { createAnecdote } from "../requests";
+// import { useContext } from "react";
+import { useNotifDispatch } from "../NotificationContext";
+// import NotifContext from "../NotificationContext";
 
 const AnecdoteForm = () => {
+  // const [notif, dispatch] = useContext(NotifContext);
+  const dispatch = useNotifDispatch();
   const getId = () => (100000 * Math.random()).toFixed(0);
   const queryClient = useQueryClient();
 
@@ -23,6 +28,13 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
     newAnecdoteMutation.mutate({ content, id: getId, votes: 0 });
+    dispatch({
+      type: "SET_NOTIF",
+      payload: `a new anecdote: ${content}, was created`,
+    });
+    setTimeout(() => {
+      dispatch({ type: "RESET_NOTIF" });
+    }, 5000);
   };
 
   return (
