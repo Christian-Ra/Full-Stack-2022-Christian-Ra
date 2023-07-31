@@ -11,6 +11,12 @@ const AnecdoteForm = () => {
   const queryClient = useQueryClient();
 
   const newAnecdoteMutation = useMutation(createAnecdote, {
+    onError: (error) => {
+      dispatch({ type: "SET_NOTIF", payload: error.response.data.error });
+      setTimeout(() => {
+        dispatch({ type: "RESET_NOTIF" });
+      }, 5000);
+    },
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueriesData("anecdotes");
       console.log(anecdotes);
@@ -20,6 +26,13 @@ const AnecdoteForm = () => {
         "anecdotes",
         anecdotes[0][1].concat(newAnecdote)
       );
+      dispatch({
+        type: "SET_NOTIF",
+        payload: `a new anecdote: ${newAnecdote.content}, was created`,
+      });
+      setTimeout(() => {
+        dispatch({ type: "RESET_NOTIF" });
+      }, 5000);
     },
   });
 
@@ -27,14 +40,11 @@ const AnecdoteForm = () => {
     event.preventDefault();
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
-    newAnecdoteMutation.mutate({ content, id: getId, votes: 0 });
-    dispatch({
-      type: "SET_NOTIF",
-      payload: `a new anecdote: ${content}, was created`,
-    });
-    setTimeout(() => {
-      dispatch({ type: "RESET_NOTIF" });
-    }, 5000);
+    try {
+      newAnecdoteMutation.mutate({ content, id: getId, votes: 0 });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
