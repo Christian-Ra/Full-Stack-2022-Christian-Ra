@@ -1,10 +1,8 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Link,
   Navigate,
-  useParams,
   useNavigate,
   useMatch,
 } from "react-router-dom";
