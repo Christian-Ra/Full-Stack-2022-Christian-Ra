@@ -187,13 +187,13 @@ const App = () => {
       <Routes>
         <Route
           path='/anecdotes/:id'
-          element={<Anecdote anecdote={anecdote} />}
+          element={<Anecdote anecdote={anecdote} vote={vote} />}
         ></Route>
         <Route path='/create' element={<CreateNew addNew={addNew} />}></Route>
         <Route path='/about' element={<About />}></Route>
         <Route
           path='/'
-          element={<AnecdoteList anecdotes={anecdotes} />}
+          element={<AnecdoteList anecdotes={anecdotes} vote={vote} />}
         ></Route>
       </Routes>
       <Footer />
