@@ -22,7 +22,6 @@ export const { setNotif, resetNotif } = notifSlice.actions
 export const setNotifWithTimeout = (notif, type, timeout) => {
   return (dispatch) => {
     dispatch(setNotif({ content: notif, type: type }))
-    console.log('DISPATCH FIRED!')
     setTimeout(() => {
       dispatch(resetNotif())
     }, timeout)

@@ -15,8 +15,6 @@ const App = () => {
   const blogFormRef = useRef()
 
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState(null)
-  const [isSuccessfulAction, setAction] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -44,11 +42,6 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      // setNotification(`${user.name} successfully logged in`)
-      // setAction(true)
-      // setTimeout(() => {
-      //   setNotification(null)
-      // }, timeOut)
       dispatch(
         setNotifWithTimeout(
           `${user.name} successfully logged in`,
@@ -57,43 +50,31 @@ const App = () => {
         )
       )
     } catch (exception) {
-      setNotification('Invalid Credentials')
-      setAction(false)
-      setTimeout(() => {
-        setNotification(null)
-      }, timeOut)
+      dispatch(setNotifWithTimeout('Invalid Credentials', false, timeOut))
     }
   }
 
   const handleLogout = async (event) => {
     event.preventDefault()
-
-    setNotification(`${user.name} successfully logged out`)
-    setAction(true)
+    dispatch(setNotifWithTimeout('User successfully logged out', true, timeOut))
     setUser(null)
     window.localStorage.removeItem('loggedBlogAppUser')
-    setTimeout(() => {
-      setNotification(null)
-    }, timeOut)
   }
 
   const addLike = async (id) => {
     const blog = blogs.find((b) => b.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    console.log('updated blog', updatedBlog)
+    // console.log('updated blog', updatedBlog)
     const returnedBlog = await blogService.addLike(id, updatedBlog)
-    console.log('blug upon running post: ', returnedBlog)
+    // console.log('blug upon running post: ', returnedBlog)
     setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)))
-    // blogService.addLike(id, updatedBlog).then((returnedBlog) => {
-    //   console.log(returnedBlog);
-    //   setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
-    // });
-    dispatch(setNotifWithTimeout)
-    // setNotification(`Liked ${blog.title} by ${blog.author}`)
-    // setAction(true)
-    // setTimeout(() => {
-    //   setNotification(null)
-    // }, 5000)
+    dispatch(
+      setNotifWithTimeout(
+        `Liked ${blog.title} by ${blog.author}`,
+        true,
+        timeOut
+      )
+    )
   }
 
   const addBlog = (blogObject) => {
@@ -102,23 +83,23 @@ const App = () => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
-        setNotification(
-          `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`
+        dispatch(
+          setNotifWithTimeout(
+            `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
+            true,
+            timeOut
+          )
         )
-        setAction(true)
-        setTimeout(() => {
-          setNotification(null)
-        }, timeOut)
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        setNotification(
-          'Blog creation failed, please ensure a valid title and URL are included'
+        dispatch(
+          setNotifWithTimeout(
+            'Blog creation failed, please ensure a valid title and URL are included',
+            false,
+            timeOut
+          )
         )
-        setAction(false)
-        setTimeout(() => {
-          setNotification(null)
-        }, timeOut)
       })
   }
 
@@ -127,11 +108,7 @@ const App = () => {
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((b) => b.id !== id))
-      setAction(true)
-      setNotification('Blog successfully removed')
-      setTimeout(() => {
-        setNotification(null)
-      }, timeOut)
+      dispatch(setNotifWithTimeout('Blog successfully removed', true, timeOut))
     }
   }
 
@@ -198,9 +175,8 @@ const App = () => {
           {blogForm()}
           {sortedBlogs().map((blog) => (
             // eslint-disable-next-line react/jsx-key
-            <div data-cy="blog-list">
+            <div key={blog.id} data-cy="blog-list">
               <Blog
-                key={blog.id}
                 blog={blog}
                 like={() => addLike(blog.id)}
                 deleteBlog={() => deleteBlog(blog.id)}
