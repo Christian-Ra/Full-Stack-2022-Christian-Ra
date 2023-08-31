@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -6,6 +7,9 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
+import { setNotifWithTimeout } from './reducers/notifReducer'
+
+import { useDispatch } from 'react-redux'
 
 const App = () => {
   const blogFormRef = useRef()
@@ -18,6 +22,11 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
   const timeOut = 5000
+
+  const dispatch = useDispatch()
+  // useEffect(() => {
+  //   dispatch(initializeBlogs())
+  // }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -35,11 +44,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setNotification(`${user.name} successfully logged in`)
-      setAction(true)
-      setTimeout(() => {
-        setNotification(null)
-      }, timeOut)
+      // setNotification(`${user.name} successfully logged in`)
+      // setAction(true)
+      // setTimeout(() => {
+      //   setNotification(null)
+      // }, timeOut)
+      dispatch(
+        setNotifWithTimeout(`${user.name} successfully logged in`, timeOut)
+      )
     } catch (exception) {
       setNotification('Invalid Credentials')
       setAction(false)
@@ -72,11 +84,12 @@ const App = () => {
     //   console.log(returnedBlog);
     //   setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
     // });
-    setNotification(`Liked ${blog.title} by ${blog.author}`)
-    setAction(true)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
+    dispatch(setNotifWithTimeout)
+    // setNotification(`Liked ${blog.title} by ${blog.author}`)
+    // setAction(true)
+    // setTimeout(() => {
+    //   setNotification(null)
+    // }, 5000)
   }
 
   const addBlog = (blogObject) => {
@@ -172,10 +185,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification
-        message={notification}
-        successAction={isSuccessfulAction}
-      ></Notification>
+      <Notification></Notification>
       {!user && loginForm()}
       {user && (
         <div>

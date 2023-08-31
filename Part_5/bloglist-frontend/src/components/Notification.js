@@ -1,7 +1,9 @@
 import '../index.css'
+import { useSelector } from 'react-redux'
 
-const Notification = ({ message, successAction }) => {
-  if (message === null) {
+const Notification = () => {
+  const notification = useSelector((state) => state.notifs)
+  if (notification.content === null) {
     return null
   }
 
@@ -13,8 +15,8 @@ const Notification = ({ message, successAction }) => {
   }
 
   return (
-    <div className="notif" style={successAction ? successAlert : failAlert}>
-      {message}
+    <div className="notif" style={notification.type ? successAlert : failAlert}>
+      {notification.content}
     </div>
   )
 }
