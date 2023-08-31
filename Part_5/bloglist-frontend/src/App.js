@@ -50,7 +50,11 @@ const App = () => {
       //   setNotification(null)
       // }, timeOut)
       dispatch(
-        setNotifWithTimeout(`${user.name} successfully logged in`, timeOut)
+        setNotifWithTimeout(
+          `${user.name} successfully logged in`,
+          true,
+          timeOut
+        )
       )
     } catch (exception) {
       setNotification('Invalid Credentials')

@@ -3,10 +3,11 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const notifSlice = createSlice({
   name: 'notifs',
-  initialState: { content: null },
+  initialState: { content: null, type: null },
   reducers: {
     setNotif(state, action) {
       state.content = action.payload.content
+      state.type = action.payload.type
       return state
     },
     resetNotif(state, action) {
@@ -18,9 +19,9 @@ const notifSlice = createSlice({
 
 export const { setNotif, resetNotif } = notifSlice.actions
 
-export const setNotifWithTimeout = (notif, timeout) => {
+export const setNotifWithTimeout = (notif, type, timeout) => {
   return (dispatch) => {
-    dispatch(setNotif({ content: notif }))
+    dispatch(setNotif({ content: notif, type: type }))
     console.log('DISPATCH FIRED!')
     setTimeout(() => {
       dispatch(resetNotif())
