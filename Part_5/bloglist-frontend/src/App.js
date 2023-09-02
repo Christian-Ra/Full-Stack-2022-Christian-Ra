@@ -8,12 +8,13 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
 import { setNotifWithTimeout } from './reducers/notifReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const blogFormRef = useRef()
-
+  const rBlogs = useSelector((state) => state.blogs)
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -62,7 +63,7 @@ const App = () => {
   }
 
   const addLike = async (id) => {
-    const blog = blogs.find((b) => b.id === id)
+    const blog = rBlogs.find((b) => b.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
     // console.log('updated blog', updatedBlog)
     const returnedBlog = await blogService.addLike(id, updatedBlog)
@@ -112,9 +113,13 @@ const App = () => {
     }
   }
 
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs))
+  // }, [])
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -160,7 +165,7 @@ const App = () => {
   )
 
   const sortedBlogs = () => {
-    return blogs.toSorted((a, b) => b.likes - a.likes)
+    return rBlogs.toSorted((a, b) => b.likes - a.likes)
   }
 
   return (

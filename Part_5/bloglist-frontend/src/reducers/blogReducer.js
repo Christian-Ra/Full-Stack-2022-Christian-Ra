@@ -13,3 +13,14 @@ const blogSlice = createSlice({
     },
   },
 })
+
+export const { appendBlog, setBlogs } = blogSlice.actions
+
+export const initializeBlogs = () => {
+  return async (dispatch) => {
+    const blogs = await blogService.getAll()
+    dispatch(setBlogs(blogs))
+  }
+}
+
+export default blogSlice.reducer
