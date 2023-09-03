@@ -8,14 +8,13 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
 import { setNotifWithTimeout } from './reducers/notifReducer'
-import { initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs, addLikeBlog } from './reducers/blogReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const blogFormRef = useRef()
-  const rBlogs = useSelector((state) => state.blogs)
-  const [blogs, setBlogs] = useState([])
+  const Blogs = useSelector((state) => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -61,39 +60,6 @@ const App = () => {
     setUser(null)
     window.localStorage.removeItem('loggedBlogAppUser')
   }
-
-  const addLike = async (id) => {
-    const blog = rBlogs.find((b) => b.id === id)
-    const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    // console.log('updated blog', updatedBlog)
-    const returnedBlog = await blogService.addLike(id, updatedBlog)
-    // console.log('blug upon running post: ', returnedBlog)
-    setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)))
-    dispatch(
-      setNotifWithTimeout(
-        `Liked ${blog.title} by ${blog.author}`,
-        true,
-        timeOut
-      )
-    )
-  }
-
-  // const addBlog = (blogObject) => {
-  //   blogFormRef.current.toggleVisibility()
-  // }
-
-  const deleteBlog = async (id) => {
-    const blog = blogs.find((b) => b.id === id)
-    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.deleteBlog(id)
-      setBlogs(blogs.filter((b) => b.id !== id))
-      dispatch(setNotifWithTimeout('Blog successfully removed', true, timeOut))
-    }
-  }
-
-  // useEffect(() => {
-  //   blogService.getAll().then((blogs) => setBlogs(blogs))
-  // }, [])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -143,7 +109,7 @@ const App = () => {
   )
 
   const sortedBlogs = () => {
-    return rBlogs.toSorted((a, b) => b.likes - a.likes)
+    return Blogs.toSorted((a, b) => b.likes - a.likes)
   }
 
   return (
@@ -159,12 +125,7 @@ const App = () => {
           {sortedBlogs().map((blog) => (
             // eslint-disable-next-line react/jsx-key
             <div key={blog.id} data-cy="blog-list">
-              <Blog
-                blog={blog}
-                like={() => addLike(blog.id)}
-                deleteBlog={() => deleteBlog(blog.id)}
-                user={user}
-              />
+              <Blog blog={blog} user={user} />
             </div>
           ))}
         </div>

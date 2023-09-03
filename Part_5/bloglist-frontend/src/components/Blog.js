@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { setNotifWithTimeout } from '../reducers/notifReducer'
+import { addLikeBlog, deleteBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, like, deleteBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const [blogView, setBlogView] = useState(false)
+  const dispatch = useDispatch()
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,6 +18,24 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
 
   const toggleBlogView = () => {
     setBlogView(!blogView)
+  }
+
+  const addLike = () => {
+    dispatch(addLikeBlog(blog.id, blog))
+    dispatch(
+      setNotifWithTimeout(`Liked ${blog.title} by ${blog.author}`, true, 5000)
+    )
+  }
+
+  const deleteBlogAction = () => {
+    dispatch(deleteBlog(blog.id))
+    dispatch(
+      setNotifWithTimeout(
+        `Deleted blog ${blog.title} by ${blog.author}`,
+        true,
+        5000
+      )
+    )
   }
 
   return (
@@ -33,14 +55,14 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
             {blog.url}
             <p data-cy="likes">
               Likes {blog.likes}
-              <button data-cy="like-button" onClick={like}>
+              <button data-cy="like-button" onClick={addLike}>
                 Like
               </button>
             </p>
             {blog.user.name}
             {blog.user.username === user.username && (
               <div>
-                <button data-cy="delete-blog-button" onClick={deleteBlog}>
+                <button data-cy="delete-blog-button" onClick={deleteBlogAction}>
                   Delete Blog
                 </button>
               </div>
@@ -53,7 +75,6 @@ const Blog = ({ blog, like, deleteBlog, user }) => {
 }
 
 Blog.propTypes = {
-  like: PropTypes.func.isRequired,
   blog: PropTypes.object.isRequired,
 }
 
