@@ -23,9 +23,9 @@ const App = () => {
   const timeOut = 5000
 
   const dispatch = useDispatch()
-  // useEffect(() => {
-  //   dispatch(initializeBlogs())
-  // }, [dispatch])
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -78,31 +78,9 @@ const App = () => {
     )
   }
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(
-          setNotifWithTimeout(
-            `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
-            true,
-            timeOut
-          )
-        )
-      })
-      // eslint-disable-next-line no-unused-vars
-      .catch((error) => {
-        dispatch(
-          setNotifWithTimeout(
-            'Blog creation failed, please ensure a valid title and URL are included',
-            false,
-            timeOut
-          )
-        )
-      })
-  }
+  // const addBlog = (blogObject) => {
+  //   blogFormRef.current.toggleVisibility()
+  // }
 
   const deleteBlog = async (id) => {
     const blog = blogs.find((b) => b.id === id)
@@ -160,7 +138,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel="Add New Blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} />
+      <BlogForm />
     </Togglable>
   )
 

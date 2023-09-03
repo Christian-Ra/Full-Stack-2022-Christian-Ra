@@ -23,4 +23,11 @@ export const initializeBlogs = () => {
   }
 }
 
+export const createBlog = (blogObject) => {
+  return async (dispatch) => {
+    const newBlog = await blogService.create(blogObject)
+    dispatch(appendBlog(newBlog))
+  }
+}
+
 export default blogSlice.reducer
