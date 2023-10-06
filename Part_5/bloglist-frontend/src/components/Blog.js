@@ -5,6 +5,7 @@ import { setNotifWithTimeout } from '../reducers/notifReducer'
 import { addLikeBlog, deleteBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog, user }) => {
+  const timeOut = 5000
   const [blogView, setBlogView] = useState(false)
   const dispatch = useDispatch()
   const blogStyle = {
@@ -23,7 +24,11 @@ const Blog = ({ blog, user }) => {
   const addLike = () => {
     dispatch(addLikeBlog(blog.id, blog))
     dispatch(
-      setNotifWithTimeout(`Liked ${blog.title} by ${blog.author}`, true, 5000)
+      setNotifWithTimeout(
+        `Liked ${blog.title} by ${blog.author}`,
+        true,
+        timeOut
+      )
     )
   }
 
@@ -33,7 +38,7 @@ const Blog = ({ blog, user }) => {
       setNotifWithTimeout(
         `Deleted blog ${blog.title} by ${blog.author}`,
         true,
-        5000
+        timeOut
       )
     )
   }

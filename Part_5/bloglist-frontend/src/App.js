@@ -8,7 +8,8 @@ import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
 import { setNotifWithTimeout } from './reducers/notifReducer'
-import { initializeBlogs, addLikeBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import { logoutUser, loginUser } from './reducers/userReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 
