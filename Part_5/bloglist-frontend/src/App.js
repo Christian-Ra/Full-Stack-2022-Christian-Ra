@@ -2,23 +2,22 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
 import { setNotifWithTimeout } from './reducers/notifReducer'
 import { initializeBlogs } from './reducers/blogReducer'
-import { logoutUser, loginUser } from './reducers/userReducer'
+import { logoutUser, loginUser, loginWithToken } from './reducers/userReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 
 const App = () => {
   const blogFormRef = useRef()
   const Blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.users)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
   const timeOut = 5000
 
@@ -29,36 +28,13 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
-
-      console.log(user.token)
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-      dispatch(
-        setNotifWithTimeout(
-          `${user.name} successfully logged in`,
-          true,
-          timeOut
-        )
-      )
-    } catch (exception) {
-      dispatch(setNotifWithTimeout('Invalid Credentials', false, timeOut))
-    }
+    dispatch(loginUser(username, password))
   }
 
   const handleLogout = async (event) => {
     event.preventDefault()
+    dispatch(logoutUser())
     dispatch(setNotifWithTimeout('User successfully logged out', true, timeOut))
-    setUser(null)
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
@@ -70,7 +46,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(loginWithToken(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -134,9 +110,5 @@ const App = () => {
     </div>
   )
 }
-
-// window.onunload = () => {
-//   window.localStorage.removeItem('loggedBlogAppUser')
-// }
 
 export default App
