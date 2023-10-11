@@ -36,4 +36,9 @@ const deleteBlog = async (id) => {
   return response.data
 }
 
+export const queryBlogs = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
+}
+
 export default { getAll, create, setToken, addLike, deleteBlog }

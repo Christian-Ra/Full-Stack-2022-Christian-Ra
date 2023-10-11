@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { queryBlogs } from './services/blogs'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -18,6 +20,20 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
   const timeOut = 5000
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: queryBlogs,
+  })
+
+  console.log(JSON.parse(JSON.stringify(result)))
+
+  if (result.isLoading) {
+    console.log('data loading')
+  }
+
+  const qblogs = result.data
+  console.log('query data: ', qblogs)
 
   const handleLogin = async (event) => {
     event.preventDefault()
