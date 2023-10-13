@@ -1,9 +1,11 @@
+import { useNotifValue } from '../NotificationContext'
 import '../index.css'
 
-const Notification = ({ message, successAction }) => {
-  if (message === null) {
-    return null
-  }
+const Notification = ({ successAction }) => {
+  const notif = useNotifValue()
+  // if (message === null) {
+  // return null
+  // }
 
   const successAlert = {
     color: 'green',
@@ -12,9 +14,11 @@ const Notification = ({ message, successAction }) => {
     color: 'red',
   }
 
+  if (!notif) return null
+
   return (
     <div className="notif" style={successAction ? successAlert : failAlert}>
-      {message}
+      {notif}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { queryBlogs } from './services/blogs'
+import { useNotifDispatch } from './NotificationContext'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,9 +12,9 @@ import Togglable from './components/Toggleable'
 
 const App = () => {
   const blogFormRef = useRef()
+  const dispatch = useNotifDispatch()
 
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState(null)
   const [isSuccessfulAction, setAction] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -51,16 +52,18 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setNotification(`${user.name} successfully logged in`)
       setAction(true)
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: `${user.name} successfully logged in`,
+      })
       setTimeout(() => {
-        setNotification(null)
+        dispatch({ type: 'RESET_NOTIF' })
       }, timeOut)
     } catch (exception) {
-      setNotification('Invalid Credentials')
-      setAction(false)
+      dispatch({ type: 'SET_NOTIF', payload: 'Invalid login credentials ' })
       setTimeout(() => {
-        setNotification(null)
+        dispatch({ type: 'RESET_NOTIF' })
       }, timeOut)
     }
   }
@@ -68,31 +71,31 @@ const App = () => {
   const handleLogout = async (event) => {
     event.preventDefault()
 
-    setNotification(`${user.name} successfully logged out`)
+    dispatch({
+      type: 'SET_NOTIF',
+      payload: `${user.name} successfully logged out`,
+    })
     setAction(true)
     setUser(null)
     window.localStorage.removeItem('loggedBlogAppUser')
     setTimeout(() => {
-      setNotification(null)
+      dispatch({ type: 'RESET_NOTIF' })
     }, timeOut)
   }
 
   const addLike = async (id) => {
     const blog = blogs.find((b) => b.id === id)
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    console.log('updated blog', updatedBlog)
     const returnedBlog = await blogService.addLike(id, updatedBlog)
-    console.log('blug upon running post: ', returnedBlog)
     setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)))
-    // blogService.addLike(id, updatedBlog).then((returnedBlog) => {
-    //   console.log(returnedBlog);
-    //   setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)));
-    // });
-    setNotification(`Liked ${blog.title} by ${blog.author}`)
+    dispatch({
+      type: 'SET_NOTIF',
+      payload: `Liked ${blog.title} by ${blog.author}`,
+    })
     setAction(true)
     setTimeout(() => {
-      setNotification(null)
-    }, 5000)
+      dispatch({ type: 'RESET_NOTIF' })
+    }, timeOut)
   }
 
   const addBlog = (blogObject) => {
@@ -101,22 +104,25 @@ const App = () => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.concat(returnedBlog))
-        setNotification(
-          `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`
-        )
+        dispatch({
+          type: 'SET_NOTIF',
+          payload: `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
+        })
         setAction(true)
         setTimeout(() => {
-          setNotification(null)
+          dispatch({ type: 'RESET_NOTIF' })
         }, timeOut)
       })
       // eslint-disable-next-line no-unused-vars
       .catch((error) => {
-        setNotification(
-          'Blog creation failed, please ensure a valid title and URL are included'
-        )
+        dispatch({
+          type: 'SET_NOTIF',
+          payload:
+            'Blog creation failed, please ensure a valid title and URL are included',
+        })
         setAction(false)
         setTimeout(() => {
-          setNotification(null)
+          dispatch({ type: 'RESET_NOTIF' })
         }, timeOut)
       })
   }
@@ -127,9 +133,9 @@ const App = () => {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((b) => b.id !== id))
       setAction(true)
-      setNotification('Blog successfully removed')
+      dispatch({ type: 'SET_NOTIF', payload: 'Blog successfully removed' })
       setTimeout(() => {
-        setNotification(null)
+        dispatch({ type: 'RESET_NOTIF' })
       }, timeOut)
     }
   }
@@ -188,10 +194,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification
-        message={notification}
-        successAction={isSuccessfulAction}
-      ></Notification>
+      <Notification successAction={isSuccessfulAction}></Notification>
       {!user && loginForm()}
       {user && (
         <div>
