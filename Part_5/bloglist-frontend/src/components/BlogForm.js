@@ -1,22 +1,67 @@
 import { useState } from 'react'
+// import { queryBlogs } from '../services/blogs'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { createBlog } from '../services/blogs'
+import { useNotifDispatch } from '../NotificationContext'
 
-const BlogForm = ({ createBlog }) => {
+const BlogForm = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const dispatch = useNotifDispatch()
+  const queryClient = useQueryClient()
+
+  const newBlogMutation = useMutation(createBlog, {
+    onSuccess: (newBlog) => {
+      console.log('value of newBlog', newBlog)
+      queryClient.invalidateQueries('blogs')
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: `a new blog: ${newBlog.title} by ${newBlog.author} was created`,
+      })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+    onError: (error) => {
+      console.log('error mutation triggered')
+      dispatch({ type: 'SET_NOTIF', payload: error.response.data.error })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+  })
 
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
+    const blogToAdd = {
       title: title,
       author: author,
       url: url,
       likes: 0,
-    })
+    }
     setAuthor('')
     setTitle('')
     setUrl('')
+    try {
+      newBlogMutation.mutate(blogToAdd)
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  // const addBlog = (event) => {
+  //   event.preventDefault()
+  //   createBlog({
+  //     title: title,
+  //     author: author,
+  //     url: url,
+  //     likes: 0,
+  //   })
+  //   setAuthor('')
+  //   setTitle('')
+  //   setUrl('')
+  // }
   return (
     <div>
       <h2>Create a new Blog</h2>

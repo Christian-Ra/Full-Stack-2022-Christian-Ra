@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { queryBlogs } from './services/blogs'
 import { useNotifDispatch } from './NotificationContext'
@@ -13,6 +13,7 @@ import Togglable from './components/Toggleable'
 const App = () => {
   const blogFormRef = useRef()
   const dispatch = useNotifDispatch()
+  // const queryClient = useQueryClient()
 
   const [blogs, setBlogs] = useState([])
   const [isSuccessfulAction, setAction] = useState(null)
@@ -25,12 +26,24 @@ const App = () => {
   const result = useQuery({
     queryKey: ['blogs'],
     queryFn: queryBlogs,
+    refetchOnWindowFocus: false,
   })
 
-  console.log(JSON.parse(JSON.stringify(result)))
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+  console.log('result', result)
+
+  // console.log(JSON.parse(JSON.stringify(result)))
 
   if (result.isLoading) {
     console.log('data loading')
+    return <div>data is loading...</div>
   }
 
   const qblogs = result.data
@@ -98,34 +111,34 @@ const App = () => {
     }, timeOut)
   }
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch({
-          type: 'SET_NOTIF',
-          payload: `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
-        })
-        setAction(true)
-        setTimeout(() => {
-          dispatch({ type: 'RESET_NOTIF' })
-        }, timeOut)
-      })
-      // eslint-disable-next-line no-unused-vars
-      .catch((error) => {
-        dispatch({
-          type: 'SET_NOTIF',
-          payload:
-            'Blog creation failed, please ensure a valid title and URL are included',
-        })
-        setAction(false)
-        setTimeout(() => {
-          dispatch({ type: 'RESET_NOTIF' })
-        }, timeOut)
-      })
-  }
+  // const addBlog = (blogObject) => {
+  //   blogFormRef.current.toggleVisibility()
+  //   blogService
+  //     .create(blogObject)
+  //     .then((returnedBlog) => {
+  //       setBlogs(blogs.concat(returnedBlog))
+  //       dispatch({
+  //         type: 'SET_NOTIF',
+  //         payload: `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
+  //       })
+  //       setAction(true)
+  //       setTimeout(() => {
+  //         dispatch({ type: 'RESET_NOTIF' })
+  //       }, timeOut)
+  //     })
+  //     // eslint-disable-next-line no-unused-vars
+  //     .catch((error) => {
+  //       dispatch({
+  //         type: 'SET_NOTIF',
+  //         payload:
+  //           'Blog creation failed, please ensure a valid title and URL are included',
+  //       })
+  //       setAction(false)
+  //       setTimeout(() => {
+  //         dispatch({ type: 'RESET_NOTIF' })
+  //       }, timeOut)
+  //     })
+  // }
 
   const deleteBlog = async (id) => {
     const blog = blogs.find((b) => b.id === id)
@@ -140,18 +153,10 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
+  // useEffect(() => {
+  //   // blogService.getAll().then((blogs) => setBlogs(blogs))
+  //   const result = useQuery('blogs', queryBlogs)
+  // }, [])
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
@@ -183,12 +188,12 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel="Add New Blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} />
+      <BlogForm />
     </Togglable>
   )
 
   const sortedBlogs = () => {
-    return blogs.toSorted((a, b) => b.likes - a.likes)
+    return qblogs.toSorted((a, b) => b.likes - a.likes)
   }
 
   return (
@@ -219,8 +224,8 @@ const App = () => {
   )
 }
 
-// window.onunload = () => {
-//   window.localStorage.removeItem('loggedBlogAppUser')
-// }
+window.onunload = () => {
+  window.localStorage.removeItem('loggedBlogAppUser')
+}
 
 export default App

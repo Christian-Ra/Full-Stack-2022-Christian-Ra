@@ -41,4 +41,12 @@ export const queryBlogs = async () => {
   return response.data
 }
 
+export const createBlog = async (newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const response = await axios.post(baseUrl, newObject, config)
+  return response.data
+}
+
 export default { getAll, create, setToken, addLike, deleteBlog }
