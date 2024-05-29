@@ -13,8 +13,9 @@ const BlogForm = () => {
 
   const newBlogMutation = useMutation(createBlog, {
     onSuccess: (newBlog) => {
-      console.log('value of newBlog', newBlog)
-      queryClient.invalidateQueries('blogs')
+      // console.log('value of newBlog', newBlog)
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
       dispatch({
         type: 'SET_NOTIF',
         payload: `a new blog: ${newBlog.title} by ${newBlog.author} was created`,

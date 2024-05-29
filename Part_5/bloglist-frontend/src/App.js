@@ -96,50 +96,6 @@ const App = () => {
     }, timeOut)
   }
 
-  const addLike = async (id) => {
-    const blog = blogs.find((b) => b.id === id)
-    const updatedBlog = { ...blog, likes: blog.likes + 1 }
-    const returnedBlog = await blogService.addLike(id, updatedBlog)
-    setBlogs(blogs.map((b) => (b.id !== id ? b : returnedBlog)))
-    dispatch({
-      type: 'SET_NOTIF',
-      payload: `Liked ${blog.title} by ${blog.author}`,
-    })
-    setAction(true)
-    setTimeout(() => {
-      dispatch({ type: 'RESET_NOTIF' })
-    }, timeOut)
-  }
-
-  // const addBlog = (blogObject) => {
-  //   blogFormRef.current.toggleVisibility()
-  //   blogService
-  //     .create(blogObject)
-  //     .then((returnedBlog) => {
-  //       setBlogs(blogs.concat(returnedBlog))
-  //       dispatch({
-  //         type: 'SET_NOTIF',
-  //         payload: `A new blog, ${returnedBlog.title} by ${returnedBlog.author} added`,
-  //       })
-  //       setAction(true)
-  //       setTimeout(() => {
-  //         dispatch({ type: 'RESET_NOTIF' })
-  //       }, timeOut)
-  //     })
-  //     // eslint-disable-next-line no-unused-vars
-  //     .catch((error) => {
-  //       dispatch({
-  //         type: 'SET_NOTIF',
-  //         payload:
-  //           'Blog creation failed, please ensure a valid title and URL are included',
-  //       })
-  //       setAction(false)
-  //       setTimeout(() => {
-  //         dispatch({ type: 'RESET_NOTIF' })
-  //       }, timeOut)
-  //     })
-  // }
-
   const deleteBlog = async (id) => {
     const blog = blogs.find((b) => b.id === id)
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
@@ -152,11 +108,6 @@ const App = () => {
       }, timeOut)
     }
   }
-
-  // useEffect(() => {
-  //   // blogService.getAll().then((blogs) => setBlogs(blogs))
-  //   const result = useQuery('blogs', queryBlogs)
-  // }, [])
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
@@ -212,7 +163,6 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                like={() => addLike(blog.id)}
                 deleteBlog={() => deleteBlog(blog.id)}
                 user={user}
               />
