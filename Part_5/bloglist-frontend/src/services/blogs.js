@@ -27,7 +27,7 @@ export const addLike = async (blogObject) => {
   return response.data
 }
 
-const deleteBlog = async (id) => {
+export const deleteBlog = async (id) => {
   const config = {
     headers: { Authorization: token },
   }
@@ -49,4 +49,4 @@ export const createBlog = async (newObject) => {
   return response.data
 }
 
-export default { getAll, create, setToken, deleteBlog }
+export default { getAll, create, setToken }

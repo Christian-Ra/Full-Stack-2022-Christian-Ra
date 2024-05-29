@@ -15,7 +15,7 @@ const App = () => {
   const dispatch = useNotifDispatch()
   // const queryClient = useQueryClient()
 
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [isSuccessfulAction, setAction] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -96,18 +96,18 @@ const App = () => {
     }, timeOut)
   }
 
-  const deleteBlog = async (id) => {
-    const blog = blogs.find((b) => b.id === id)
-    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.deleteBlog(id)
-      setBlogs(blogs.filter((b) => b.id !== id))
-      setAction(true)
-      dispatch({ type: 'SET_NOTIF', payload: 'Blog successfully removed' })
-      setTimeout(() => {
-        dispatch({ type: 'RESET_NOTIF' })
-      }, timeOut)
-    }
-  }
+  // const deleteBlog = async (id) => {
+  //   const blog = blogs.find((b) => b.id === id)
+  //   if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
+  //     await blogService.deleteBlog(id)
+  //     setBlogs(blogs.filter((b) => b.id !== id))
+  //     setAction(true)
+  //     dispatch({ type: 'SET_NOTIF', payload: 'Blog successfully removed' })
+  //     setTimeout(() => {
+  //       dispatch({ type: 'RESET_NOTIF' })
+  //     }, timeOut)
+  //   }
+  // }
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
@@ -160,12 +160,7 @@ const App = () => {
           {sortedBlogs().map((blog) => (
             // eslint-disable-next-line react/jsx-key
             <div data-cy="blog-list">
-              <Blog
-                key={blog.id}
-                blog={blog}
-                deleteBlog={() => deleteBlog(blog.id)}
-                user={user}
-              />
+              <Blog key={blog.id} blog={blog} user={user} />
             </div>
           ))}
         </div>

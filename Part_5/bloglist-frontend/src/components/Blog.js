@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { addLike } from '../services/blogs'
+import { addLike, deleteBlog } from '../services/blogs'
 import { useNotifDispatch } from '../NotificationContext'
 
-const Blog = ({ blog, deleteBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const [blogView, setBlogView] = useState(false)
   const dispatch = useNotifDispatch()
   const queryClient = useQueryClient()
@@ -20,6 +20,32 @@ const Blog = ({ blog, deleteBlog, user }) => {
   const toggleBlogView = () => {
     setBlogView(!blogView)
   }
+
+  const deleteBlogMutation = useMutation(deleteBlog, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs'])
+      // console.log('id used to filter', id)
+      // const blogs = queryClient.getQueryData(['blogs'])
+      // queryClient.setQueryData(
+      //   ['blogs'],
+      //   blogs.filter((b) => b.id !== id)
+      // )
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: 'Blog successfully removed',
+      })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+    onError: (error) => {
+      console.log('error mutation triggered')
+      dispatch({ type: 'SET_NOTIF', payload: error.response.data.error })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+  })
 
   const likeBlogMutation = useMutation(addLike, {
     onSuccess: (updatedBlog) => {
@@ -44,6 +70,16 @@ const Blog = ({ blog, deleteBlog, user }) => {
       }, 5000)
     },
   })
+
+  const removeBlog = () => {
+    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}`)) {
+      try {
+        deleteBlogMutation.mutate(blog.id)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 
   const likeBlog = () => {
     const updatedBlog = { ...blog, likes: blog.likes + 1 }
@@ -84,7 +120,7 @@ const Blog = ({ blog, deleteBlog, user }) => {
             {blog.user.name}
             {blog.user.username === user.username && (
               <div>
-                <button data-cy="delete-blog-button" onClick={deleteBlog}>
+                <button data-cy="delete-blog-button" onClick={removeBlog}>
                   Delete Blog
                 </button>
               </div>
