@@ -96,19 +96,6 @@ const App = () => {
     }, timeOut)
   }
 
-  // const deleteBlog = async (id) => {
-  //   const blog = blogs.find((b) => b.id === id)
-  //   if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
-  //     await blogService.deleteBlog(id)
-  //     setBlogs(blogs.filter((b) => b.id !== id))
-  //     setAction(true)
-  //     dispatch({ type: 'SET_NOTIF', payload: 'Blog successfully removed' })
-  //     setTimeout(() => {
-  //       dispatch({ type: 'RESET_NOTIF' })
-  //     }, timeOut)
-  //   }
-  // }
-
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }

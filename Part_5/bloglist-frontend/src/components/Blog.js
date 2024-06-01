@@ -23,13 +23,13 @@ const Blog = ({ blog, user }) => {
 
   const deleteBlogMutation = useMutation(deleteBlog, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['blogs'])
+      // queryClient.invalidateQueries(['blogs'])
       // console.log('id used to filter', id)
-      // const blogs = queryClient.getQueryData(['blogs'])
-      // queryClient.setQueryData(
-      //   ['blogs'],
-      //   blogs.filter((b) => b.id !== id)
-      // )
+      const blogs = queryClient.getQueryData(['blogs'])
+      queryClient.setQueryData(
+        ['blogs'],
+        blogs.filter((b) => b.id !== blog.id)
+      )
       dispatch({
         type: 'SET_NOTIF',
         payload: 'Blog successfully removed',
