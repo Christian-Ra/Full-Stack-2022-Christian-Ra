@@ -5,6 +5,7 @@ import { NotifContextProvider } from './NotificationContext'
 import { UserContextProvider } from './UserContext'
 
 import App from './App'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const queryClient = new QueryClient()
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient} contextSharing={true}>
     <UserContextProvider>
       <NotifContextProvider>
-        <App />
+        <Router>
+          <App />
+        </Router>
       </NotifContextProvider>
     </UserContextProvider>
   </QueryClientProvider>

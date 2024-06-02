@@ -1,36 +1,40 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { Routes, Route, useMatch } from 'react-router-dom'
+
 import { queryBlogs } from './services/blogs'
+import { queryUsers } from './services/users'
 
 import { useNotifDispatch } from './NotificationContext'
 import { useUserDispatch, useUserValue } from './UserContext'
 
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
-import Togglable from './components/Toggleable'
+import Users from './components/Users'
+import HomePage from './components/HomePage'
+import User from './components/User'
 
 const App = () => {
-  const blogFormRef = useRef()
   const dispatch = useNotifDispatch()
   const userDispatch = useUserDispatch()
-  // const queryClient = useQueryClient()
-
-  // const [blogs, setBlogs] = useState([])
   const [isSuccessfulAction, setAction] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  // const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
   const timeOut = 5000
   const contextUser = useUserValue()
 
-  const result = useQuery({
+  const blogs = useQuery({
     queryKey: ['blogs'],
     queryFn: queryBlogs,
+    refetchOnWindowFocus: false,
+  })
+
+  const users = useQuery({
+    queryKey: ['users'],
+    queryFn: queryUsers,
     refetchOnWindowFocus: false,
   })
 
@@ -38,7 +42,6 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      // setUser(user)
       userDispatch({
         type: 'SET_USER',
         payload: user,
@@ -46,17 +49,22 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  console.log('result', result)
+  console.log('result', blogs)
 
-  // console.log(JSON.parse(JSON.stringify(result)))
-
-  if (result.isLoading) {
+  if (blogs.isLoading || users.isLoading) {
     console.log('data loading')
     return <div>data is loading...</div>
   }
 
-  const qblogs = result.data
-  console.log('query data: ', qblogs)
+  const queriedblogs = blogs.data
+  const queriedUsers = users.data
+  console.log('query data: ', queriedblogs)
+  console.log('users data: ', queriedUsers)
+
+  const match = useMatch('/users/:id')
+  const userPage = match
+    ? queriedUsers.find((user) => user.id === String(match.params.id))
+    : null
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -71,7 +79,6 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
-      // setUser(user)
       userDispatch({
         type: 'SET_USER',
         payload: user,
@@ -99,11 +106,9 @@ const App = () => {
 
     dispatch({
       type: 'SET_NOTIF',
-      // payload: `${user.name} successfully logged out`,
       payload: `${contextUser.name} successfully logged out`,
     })
     setAction(true)
-    // setUser(null)
     userDispatch({
       type: 'LOGOUT_USER',
     })
@@ -141,14 +146,8 @@ const App = () => {
     )
   }
 
-  const blogForm = () => (
-    <Togglable buttonLabel="Add New Blog" ref={blogFormRef}>
-      <BlogForm />
-    </Togglable>
-  )
-
   const sortedBlogs = () => {
-    return qblogs.toSorted((a, b) => b.likes - a.likes)
+    return queriedblogs.toSorted((a, b) => b.likes - a.likes)
   }
 
   return (
@@ -160,13 +159,12 @@ const App = () => {
         <div>
           <p className="user-signed-in">{contextUser.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
-          {blogForm()}
-          {sortedBlogs().map((blog) => (
-            // eslint-disable-next-line react/jsx-key
-            <div data-cy="blog-list">
-              <Blog key={blog.id} blog={blog} user={contextUser} />
-            </div>
-          ))}
+          <Routes>
+            <Route path="/users/:id" element={<User user={userPage} />} />
+            {/* !!! Ordering of routes matters a lot, having the path '/' above '/users/ causes an error with hook calls */}
+            <Route path="/users" element={<Users users={queriedUsers} />} />
+            <Route path="/" element={<HomePage blogs={sortedBlogs()} />} />
+          </Routes>
         </div>
       )}
     </div>
