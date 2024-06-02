@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { queryBlogs } from './services/blogs'
+
 import { useNotifDispatch } from './NotificationContext'
+import { useUserDispatch, useUserValue } from './UserContext'
+
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -13,15 +16,17 @@ import Togglable from './components/Toggleable'
 const App = () => {
   const blogFormRef = useRef()
   const dispatch = useNotifDispatch()
+  const userDispatch = useUserDispatch()
   // const queryClient = useQueryClient()
 
   // const [blogs, setBlogs] = useState([])
   const [isSuccessfulAction, setAction] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
   const [loginVisible, setLoginVisible] = useState(false)
   const timeOut = 5000
+  const contextUser = useUserValue()
 
   const result = useQuery({
     queryKey: ['blogs'],
@@ -33,7 +38,11 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      // setUser(user)
+      userDispatch({
+        type: 'SET_USER',
+        payload: user,
+      })
       blogService.setToken(user.token)
     }
   }, [])
@@ -62,7 +71,11 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
       blogService.setToken(user.token)
-      setUser(user)
+      // setUser(user)
+      userDispatch({
+        type: 'SET_USER',
+        payload: user,
+      })
       setUsername('')
       setPassword('')
       setAction(true)
@@ -86,10 +99,14 @@ const App = () => {
 
     dispatch({
       type: 'SET_NOTIF',
-      payload: `${user.name} successfully logged out`,
+      // payload: `${user.name} successfully logged out`,
+      payload: `${contextUser.name} successfully logged out`,
     })
     setAction(true)
-    setUser(null)
+    // setUser(null)
+    userDispatch({
+      type: 'LOGOUT_USER',
+    })
     window.localStorage.removeItem('loggedBlogAppUser')
     setTimeout(() => {
       dispatch({ type: 'RESET_NOTIF' })
@@ -138,26 +155,22 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification successAction={isSuccessfulAction}></Notification>
-      {!user && loginForm()}
-      {user && (
+      {!contextUser && loginForm()}
+      {contextUser && (
         <div>
-          <p className="user-signed-in">{user.name} logged in</p>
+          <p className="user-signed-in">{contextUser.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
           {sortedBlogs().map((blog) => (
             // eslint-disable-next-line react/jsx-key
             <div data-cy="blog-list">
-              <Blog key={blog.id} blog={blog} user={user} />
+              <Blog key={blog.id} blog={blog} user={contextUser} />
             </div>
           ))}
         </div>
       )}
     </div>
   )
-}
-
-window.onunload = () => {
-  window.localStorage.removeItem('loggedBlogAppUser')
 }
 
 export default App
