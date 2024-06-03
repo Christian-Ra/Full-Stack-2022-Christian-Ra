@@ -1,12 +1,21 @@
 import { useRef } from 'react'
 import BlogForm from './BlogForm'
 import Togglable from './Toggleable'
-import Blog from './Blog'
-import { useUserValue } from '../UserContext'
+import { Link } from 'react-router-dom'
+// import Blog from './Blog'
+// import { useUserValue } from '../UserContext'
 
 const HomePage = ({ blogs }) => {
   const blogFormRef = useRef()
-  const user = useUserValue()
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    verticalAlign: 'center',
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  }
+  //   const user = useUserValue()
 
   const blogForm = () => (
     <Togglable buttonLabel="Add New Blog" ref={blogFormRef}>
@@ -18,8 +27,8 @@ const HomePage = ({ blogs }) => {
     <div>
       {blogForm()}
       {blogs.map((blog) => (
-        <div key={blog.id} data-cy="blog-list">
-          <Blog blog={blog} user={user} />
+        <div key={blog.id} style={blogStyle} data-cy="blog-list">
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
         </div>
       ))}
     </div>

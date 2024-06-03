@@ -1,25 +1,17 @@
-import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { addLike, deleteBlog } from '../services/blogs'
 import { useNotifDispatch } from '../NotificationContext'
+import { useUserValue } from '../UserContext'
+import { useNavigate } from 'react-router-dom'
 
-const Blog = ({ blog, user }) => {
-  const [blogView, setBlogView] = useState(false)
+const Blog = ({ blog }) => {
+  const navigate = useNavigate()
   const dispatch = useNotifDispatch()
   const queryClient = useQueryClient()
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    verticalAlign: 'center',
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+  const user = useUserValue()
 
-  const toggleBlogView = () => {
-    setBlogView(!blogView)
-  }
+  if (!blog) return null
 
   const deleteBlogMutation = useMutation(deleteBlog, {
     onSuccess: () => {
@@ -37,6 +29,7 @@ const Blog = ({ blog, user }) => {
       setTimeout(() => {
         dispatch({ type: 'RESET_NOTIF' })
       }, 5000)
+      navigate('/')
     },
     onError: (error) => {
       console.log('error mutation triggered')
@@ -95,38 +88,33 @@ const Blog = ({ blog, user }) => {
       console.log(error)
     }
   }
+  console.log('type of blog: ', typeof blog)
 
   return (
     <div>
-      <div
-        data-cy="shown-blog-info"
-        style={blogStyle}
-        className="shownBlogInfo"
-      >
-        {blog.title} : {blog.author}
+      <div data-cy="shown-blog-info">
+        <h1>
+          {' '}
+          {blog.title} : {blog.author}{' '}
+        </h1>
         <br></br>
-        <button data-cy="toggle-blog-button" onClick={toggleBlogView}>
-          {blogView ? 'Hide' : 'Show'}
-        </button>
-        {blogView && (
-          <div data-cy="hidden-blog-info" className="hiddenBlogInfo">
-            {blog.url}
-            <p data-cy="likes">
-              Likes {blog.likes}
-              <button data-cy="like-button" onClick={likeBlog}>
-                Like
+        <div data-cy="hidden-blog-info">
+          <a href={blog.url}>{blog.url}</a>
+          <p data-cy="likes">
+            Likes {blog.likes}
+            <button data-cy="like-button" onClick={likeBlog}>
+              Like
+            </button>
+          </p>
+          added by {blog.user.name}
+          {blog.user.username === user.username && (
+            <div>
+              <button data-cy="delete-blog-button" onClick={removeBlog}>
+                Delete Blog
               </button>
-            </p>
-            {blog.user.name}
-            {blog.user.username === user.username && (
-              <div>
-                <button data-cy="delete-blog-button" onClick={removeBlog}>
-                  Delete Blog
-                </button>
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
