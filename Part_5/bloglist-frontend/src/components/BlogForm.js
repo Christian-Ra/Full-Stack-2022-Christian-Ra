@@ -40,6 +40,7 @@ const BlogForm = () => {
       author: author,
       url: url,
       likes: 0,
+      comments: [],
     }
     setAuthor('')
     setTitle('')
