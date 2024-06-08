@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { addLike, deleteBlog } from '../services/blogs'
+import { addLike, deleteBlog, addComment } from '../services/blogs'
 import { useNotifDispatch } from '../NotificationContext'
 import { useUserValue } from '../UserContext'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Blog = ({ blog }) => {
   const navigate = useNavigate()
   const dispatch = useNotifDispatch()
   const queryClient = useQueryClient()
   const user = useUserValue()
+
+  const [comment, setComment] = useState('')
 
   if (!blog) return null
 
@@ -64,6 +67,30 @@ const Blog = ({ blog }) => {
     },
   })
 
+  const commentMutation = useMutation(addComment, {
+    onSuccess: (updatedBlog) => {
+      const blogs = queryClient.getQueryData(['blogs'])
+      const newBlogs = blogs.map((b) =>
+        b.id !== updatedBlog.id ? b : updatedBlog
+      )
+      queryClient.setQueryData(['blogs'], newBlogs)
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: 'Saved Comment',
+      })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+    onError: (error) => {
+      console.log('error mutation triggered')
+      dispatch({ type: 'SET_NOTIF', payload: error.response.data.error })
+      setTimeout(() => {
+        dispatch({ type: 'RESET_NOTIF' })
+      }, 5000)
+    },
+  })
+
   const removeBlog = () => {
     if (window.confirm(`Delete blog ${blog.title} by ${blog.author}`)) {
       try {
@@ -71,6 +98,17 @@ const Blog = ({ blog }) => {
       } catch (error) {
         console.log(error)
       }
+    }
+  }
+
+  const commentBlog = (event) => {
+    event.preventDefault()
+    const commentToPost = { comment: comment, id: blog.id }
+    setComment('')
+    try {
+      commentMutation.mutate(commentToPost)
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -115,8 +153,16 @@ const Blog = ({ blog }) => {
             </div>
           )}
           <h3>Comments</h3>
+          <input
+            data-cy="comment-input"
+            value={comment}
+            onChange={(event) => setComment(event.target.value)}
+            placeholder="Add Comment"
+          />
+          <button onClick={commentBlog}>Add Comment</button>
           {blog.comments.map((c) => (
-            <ul key={blog.id}>
+            // eslint-disable-next-line react/jsx-key
+            <ul>
               <li>{c}</li>
             </ul>
           ))}

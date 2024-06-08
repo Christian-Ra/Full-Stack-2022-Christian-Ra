@@ -49,13 +49,14 @@ export const createBlog = async (newObject) => {
   return response.data
 }
 
-export const addComment = async (newComment, id) => {
+export const addComment = async (commentObject) => {
   const config = {
     headers: { Authorization: token },
   }
+  const commentToPost = { comment: commentObject.comment }
   const response = await axios.post(
-    `${baseUrl}/${id}/comments`,
-    newComment,
+    `${baseUrl}/${commentObject.id}/comments`,
+    commentToPost,
     config
   )
   return response.data
