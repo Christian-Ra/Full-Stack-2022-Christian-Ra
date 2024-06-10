@@ -1,15 +1,13 @@
 import { useUserValue, useUserDispatch } from '../UserContext'
 import { Link } from 'react-router-dom'
+import { Button, Box } from '@chakra-ui/react'
+import { Link as ChakraLink } from '@chakra-ui/react'
 import { useNotifDispatch } from '../NotificationContext'
 
 const NavBar = () => {
   const notifDispatch = useNotifDispatch()
   const userDispatch = useUserDispatch()
   const user = useUserValue()
-
-  const navBarStyle = {
-    backgroundColor: 'gray',
-  }
 
   const handleLogout = async (event) => {
     event.preventDefault()
@@ -28,10 +26,31 @@ const NavBar = () => {
   }
 
   return (
-    <div style={navBarStyle}>
-      <Link to={'/'}>Blogs</Link> <Link to={'/users'}>Users</Link> {user.name}{' '}
-      logged in <button onClick={handleLogout}>Log Out</button>
-    </div>
+    <Box
+      display={'flex'}
+      alignItems={'center'}
+      justifyContent={'space-around'}
+      bg={'tomato'}
+      w={'100%'}
+      p={4}
+      color={'white'}
+    >
+      <ChakraLink as={Link} to={'/'}>
+        Blogs
+      </ChakraLink>{' '}
+      <ChakraLink as={Link} to={'/users'}>
+        Users
+      </ChakraLink>{' '}
+      {user.name} logged in{' '}
+      <Button
+        colorScheme="gray"
+        color={'black'}
+        variant={'ghost'}
+        onClick={handleLogout}
+      >
+        Log Out
+      </Button>
+    </Box>
   )
 }
 

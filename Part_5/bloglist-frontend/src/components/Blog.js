@@ -5,6 +5,7 @@ import { useNotifDispatch } from '../NotificationContext'
 import { useUserValue } from '../UserContext'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { Input, Heading, Button, Box, Text } from '@chakra-ui/react'
 
 const Blog = ({ blog }) => {
   const navigate = useNavigate()
@@ -18,8 +19,6 @@ const Blog = ({ blog }) => {
 
   const deleteBlogMutation = useMutation(deleteBlog, {
     onSuccess: () => {
-      // queryClient.invalidateQueries(['blogs'])
-      // console.log('id used to filter', id)
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(
         ['blogs'],
@@ -101,6 +100,18 @@ const Blog = ({ blog }) => {
     }
   }
 
+  const boxStyle = {
+    display: 'flex',
+    width: '40%',
+    position: 'absolute',
+    left: '30%',
+    flexDirection: 'column',
+    paddingLeft: 2,
+    verticalAlign: 'center',
+    marginBottom: 5,
+    justifyContent: 'center',
+  }
+
   const commentBlog = (event) => {
     event.preventDefault()
     const commentToPost = { comment: comment, id: blog.id }
@@ -126,47 +137,58 @@ const Blog = ({ blog }) => {
       console.log(error)
     }
   }
-  console.log('type of blog: ', typeof blog)
 
   return (
     <div>
       <div data-cy="shown-blog-info">
-        <h1>
+        <Heading textAlign={'center'}>
           {' '}
           {blog.title} : {blog.author}{' '}
-        </h1>
+        </Heading>
         <br></br>
-        <div data-cy="hidden-blog-info">
-          <a href={blog.url}>{blog.url}</a>
-          <p data-cy="likes">
+        <Box style={boxStyle} data-cy="hidden-blog-info">
+          <a
+            style={{ maxWidth: 'fit-content', margin: '0px 0px 20px 0px' }}
+            href={blog.url}
+          >
+            Click to View Blog
+          </a>
+          <Text data-cy="likes">
             Likes {blog.likes}
-            <button data-cy="like-button" onClick={likeBlog}>
+            <Button m={'5px 10px'} data-cy="like-button" onClick={likeBlog}>
               Like
-            </button>
-          </p>
-          added by {blog.user.name}
+            </Button>
+          </Text>
+          <Text>Added by {blog.user.name}</Text>
           {blog.user.username === user.username && (
             <div>
-              <button data-cy="delete-blog-button" onClick={removeBlog}>
+              <Button
+                margin={'10px 10px'}
+                colorScheme={'red'}
+                data-cy="delete-blog-button"
+                onClick={removeBlog}
+              >
                 Delete Blog
-              </button>
+              </Button>
             </div>
           )}
           <h3>Comments</h3>
-          <input
+          <Input
             data-cy="comment-input"
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             placeholder="Add Comment"
           />
-          <button onClick={commentBlog}>Add Comment</button>
+          <Button margin={'15px 0px'} padding={'8px'} onClick={commentBlog}>
+            Add Comment
+          </Button>
           {blog.comments.map((c) => (
             // eslint-disable-next-line react/jsx-key
             <ul>
               <li>{c}</li>
             </ul>
           ))}
-        </div>
+        </Box>
       </div>
     </div>
   )

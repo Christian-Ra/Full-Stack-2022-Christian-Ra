@@ -4,11 +4,12 @@ import blogService from '../services/blogs'
 import { useUserDispatch } from '../UserContext'
 import { useNavigate } from 'react-router-dom'
 import { useNotifDispatch } from '../NotificationContext'
+import { Input, Button, Box } from '@chakra-ui/react'
 
 const LoginForm = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [loginVisible, setLoginVisible] = useState(false)
+  // const [loginVisible, setLoginVisible] = useState(false)
   const userDispatch = useUserDispatch()
   const notifDispatch = useNotifDispatch()
   const navigate = useNavigate()
@@ -51,45 +52,49 @@ const LoginForm = () => {
       }, timeOut)
     }
   }
-  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-  const showWhenVisible = { display: loginVisible ? '' : 'none' }
+  // const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+  // const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
   return (
     <div>
       <h1>Blogs App</h1>
-      <div style={hideWhenVisible}>
-        <button
-          className="open-login-button"
-          onClick={() => setLoginVisible(true)}
-        >
-          Log In
-        </button>
-      </div>
-      <div style={showWhenVisible}>
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <div>
-            Username
-            <input
-              id="username"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            Password
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button className="login-button" type="submit">
-            Log in
-          </button>
-        </form>
-      </div>
+
+      <Box
+        height={'50%'}
+        width={'30%'}
+        position={'absolute'}
+        margin={'200px 0px'}
+        // top={'25%'}
+        left={'35%'}
+      >
+        <div>
+          <h2>Login</h2>
+          <form onSubmit={handleLogin}>
+            <div>
+              Username
+              <Input
+                id="username"
+                value={username}
+                m={'4px'}
+                onChange={({ target }) => setUsername(target.value)}
+              />
+            </div>
+            <div>
+              Password
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                m={'4px'}
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </div>
+            <Button m={'10px 0px'} className="login-button" type="submit">
+              Log in
+            </Button>
+          </form>
+        </div>
+      </Box>
     </div>
   )
 }

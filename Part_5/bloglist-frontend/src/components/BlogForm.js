@@ -2,6 +2,8 @@ import { useState } from 'react'
 // import { queryBlogs } from '../services/blogs'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { createBlog } from '../services/blogs'
+import { Button } from '@chakra-ui/react'
+import { Input } from '@chakra-ui/react'
 import { useNotifDispatch } from '../NotificationContext'
 
 const BlogForm = () => {
@@ -71,32 +73,40 @@ const BlogForm = () => {
       <form onSubmit={addBlog}>
         <div>
           Title:
-          <input
+          <Input
             data-cy="blog-title"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="Enter Title:"
+            color="teal"
+            _placeholder={{ color: 'inherit' }}
           />
         </div>
         <div>
           Author:
-          <input
+          <Input
             data-cy="blog-author"
             value={author}
             onChange={(event) => setAuthor(event.target.value)}
             placeholder="Enter Author:"
+            color="teal"
+            _placeholder={{ color: 'inherit' }}
           />
         </div>
         <div>
           URL:
-          <input
+          <Input
             data-cy="blog-url"
             value={url}
             onChange={(event) => setUrl(event.target.value)}
             placeholder="Enter URL:"
+            color="teal"
+            _placeholder={{ color: 'inherit' }}
           />
         </div>
-        <button type="submit">Add Blog</button>
+        <Button colorScheme="teal" type="submit">
+          Add Blog
+        </Button>
       </form>
     </div>
   )

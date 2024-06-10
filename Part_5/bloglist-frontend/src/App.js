@@ -79,7 +79,6 @@ const App = () => {
         {contextUser ? (
           <div>
             <NavBar />
-            <h2>blogs</h2>{' '}
           </div>
         ) : null}
         <Routes>
