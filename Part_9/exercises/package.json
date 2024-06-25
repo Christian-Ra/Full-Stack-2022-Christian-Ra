@@ -1,0 +1,24 @@
+{
+  "name": "bmi_app",
+  "version": "1.0.0",
+  "description": "Excercise app for FullStack Open part 9 TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "calculateBmi": "ts-node bmiCalculator.ts",
+    "calculateExercises": "ts-node excerciseCalculator.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra.git"
+  },
+  "author": "Christian Razo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra/issues"
+  },
+  "homepage": "https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra#readme",
+  "devDependencies": {
+    "@types/node": "^20.14.8"
+  }
+}
