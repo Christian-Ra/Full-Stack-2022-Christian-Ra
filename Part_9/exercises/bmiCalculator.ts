@@ -1,5 +1,4 @@
 
-
 const calculateBmi = (height: number, weight: number): string => {
     
     const bmi = Math.round(weight / Math.pow((height/100), 2) * 100) /100
@@ -31,3 +30,5 @@ try {
 
     console.log(errorMessage)
 }
+
+export default { calculateBmi }
