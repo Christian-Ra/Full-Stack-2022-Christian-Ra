@@ -27,6 +27,6 @@
       "project": "./tsconfig.json"
     }
   }
-  // note on eslint: For some reason lint has a difficult time parsing through files when using relative links to tsconfig.json
+  // note on eslint: For some reason lint has a difficult time parsing through files when using relative links to tsconfig.json, especially not in the root directory
   // To fix, paths were set vscode settings under the eslint.workingDirectories setting
   // Link to issue used for fix: https://github.com/microsoft/vscode-eslint/issues/1170
