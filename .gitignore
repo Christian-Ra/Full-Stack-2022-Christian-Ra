@@ -26,3 +26,5 @@ yarn-error.log*
 Part_9/notes/package-lock.json
 /Part_9/exercises/node_modules
 /Part_9/exercises/backend/node_modules
+Part_9/.vscode/settings.json
+/Part_9/exercises/backend/build

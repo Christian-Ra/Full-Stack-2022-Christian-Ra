@@ -1,0 +1,36 @@
+{
+  "name": "patientor",
+  "version": "1.0.0",
+  "description": "medical record application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node build/src/index.js",
+    "lint": "eslint --ext .ts .",
+    "lintFix": "eslint --fix --ext .ts ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra.git"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Christian Razo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra/issues"
+  },
+  "homepage": "https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

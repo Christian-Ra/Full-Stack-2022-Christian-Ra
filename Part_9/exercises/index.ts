@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import express from 'express';
 import bmiCalculator from './bmiCalculator';
 import {calculateExercises} from './excerciseCalculator';
@@ -28,7 +31,7 @@ app.post('/exercises', (_req, res) => {
     }
 
     if (isNaN(Number(body.target))) {
-        return res.status(400).json({error: 'malformatted parameters'})
+        return res.status(400).json({error: 'malformatted parameters'});
     }
     const result = calculateExercises(body.trackedData, body.target);
 
