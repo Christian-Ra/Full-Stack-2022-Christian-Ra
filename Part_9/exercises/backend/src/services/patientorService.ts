@@ -1,10 +1,12 @@
 import diagnosticData from '../data/diagnoses';
 import patientData from '../data/patients';
+import {v1 as uuid} from 'uuid';
 
-import { Diagnosis, NonSensitivePatientData, Patient } from '../types';
+import { Diagnosis, NonSensitivePatientData, Patient, NewPatientEntry } from '../types';
 
 const diagnoses: Diagnosis[] = diagnosticData;
 const patients: Patient[] = patientData;
+
 
 const getDiagnosticData = (): Diagnosis[] => {
     return diagnoses;
@@ -20,6 +22,19 @@ const getPatientData = (): NonSensitivePatientData[] => {
     }));
 };
 
+const addPatient = (entry: NewPatientEntry): Patient => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const id: string = uuid();
+    const newPatient = {
+        id: id,
+        ...entry
+    };
+
+    patients.push(newPatient);
+    return newPatient;
+
+};
+
 export default {
-    getDiagnosticData, getPatientData
+    getDiagnosticData, getPatientData, addPatient
 };

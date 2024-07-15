@@ -26,11 +26,13 @@
   "homepage": "https://github.com/Christian-Ra/Full-Stack-2022-Christian-Ra#readme",
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/uuid": "^10.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.2"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "uuid": "^10.0.0"
   }
 }
