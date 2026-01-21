@@ -31,4 +31,3 @@ export type NewDiaryEntry = z.infer<typeof NewEntrySchema>;
 
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
 
-// export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
