@@ -1,7 +1,8 @@
 
 import express from 'express';
-import toNewDiaryEntry from '../utils';
+import { toNewDiaryEntry } from '../utils';
 import diaryService from '../services/diaryService';
+import * as z from 'zod';
 
 const router = express.Router();
 
@@ -25,11 +26,16 @@ router.post('/', (req, res) => {
         const addedEntry = diaryService.addDiary(newDiaryEntry);
         res.json(addedEntry);
     } catch (error: unknown) {
-        let errorMessage = 'Something went wrong.';
-        if (error instanceof Error) {
-            errorMessage += ' Error: ' + error.message;
+        if (error instanceof z.ZodError) {
+            res.status(400).send({error: error.issues});
+        } else {
+            res.status(400).send({error: 'unknown error.'});
         }
-        res.status(400).send(errorMessage);
+        // let errorMessage = 'Something went wrong.';
+        // if (error instanceof Error) {
+        //     errorMessage += ' Error: ' + error.message;
+        // }
+        // res.status(400).send(errorMessage);
     }
     // const {date, weather, visibility, comment } = req.body;
     // const addedEntry = diaryService.addDiary({
