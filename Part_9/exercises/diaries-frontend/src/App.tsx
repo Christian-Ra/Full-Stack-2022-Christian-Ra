@@ -4,8 +4,6 @@ import './App.css';
 import axios from 'axios';
 const diariesBaseUrl = 'http://localhost:3000/api/diaries';
 
-
-
 const App = () => {
 
   const [diaries, setDiaries] = useState<Diary[]>([]);
@@ -65,18 +63,71 @@ const App = () => {
           <div>
             Visibility:
             <input
-              type="text"
-              value={visibility}
-              onChange={(e) => setVisibility(e.target.value)}
+              type="radio"
+              name="visibility"
+              checked={visibility === 'great'}
+              onChange={() => setVisibility('great')}
             />
+            Great
+            <input
+              type="radio"
+              name="visibility"
+              checked={visibility === 'good'}
+              onChange={() => setVisibility('good')}
+            />
+            Good
+            <input
+              type="radio"
+              name="visibility"
+              checked={visibility === 'ok'}
+              onChange={() => setVisibility('ok')}
+            />
+            OK
+            <input
+              type="radio"
+              name="visibility"
+              checked={visibility === 'poor'}
+              onChange={() => setVisibility('poor')}
+            />
+            Poor
           </div>
           <div>
             Weather:
             <input
-              type="text"
-              value={weather}
-              onChange={(e) => setWeather(e.target.value)}
+              type="radio"
+              name="weather"
+              checked={weather === 'sunny'}
+              onChange={() => setWeather('sunny')}
             />
+            Sunny
+            <input
+              type="radio"
+              name="weather"
+              checked={weather === 'rainy'}
+              onChange={() => setWeather('rainy')}
+            />
+            Rainy
+            <input
+              type="radio"
+              name="weather"
+              checked={weather === 'cloudy'}
+              onChange={() => setWeather('cloudy')}
+            />
+            Cloudy
+            <input
+              type="radio"
+              name="weather"
+              checked={weather === 'stormy'}
+              onChange={() => setWeather('stormy')}
+            />
+            Stormy
+            <input
+              type="radio"
+              name="weather"
+              checked={weather === 'windy'}
+              onChange={() => setWeather('windy')}
+            />
+            Windy
           </div>
           <div>
             Comment:
