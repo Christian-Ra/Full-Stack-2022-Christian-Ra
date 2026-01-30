@@ -4,12 +4,20 @@ import {z} from 'zod';
 import { NewPatientSchema } from '../utils';
 import patientorService from '../services/patientorService';
 import { NewPatientEntry, Patient } from '../types';
-// import toNewPatient from '../utils';
 
 const router = express.Router();
 
 router.get('/',(_req, res) => {
     res.send(patientorService.getPatientData());
+});
+
+router.get('/:id', (_req, res) => {
+    const patient = patientorService.getPatientById(_req.params.id);
+    if (patient) {
+        res.json(patient);
+    } else {
+        res.status(404).send({ error: 'Patient not found' });
+    }
 });
 
 const newPatientParser = ( req: Request, _res: Response, next: NextFunction ) => {
