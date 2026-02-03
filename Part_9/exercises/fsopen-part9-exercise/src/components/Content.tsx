@@ -1,4 +1,4 @@
-interface Part {
+type Part = {
     name: string,
     exerciseCount: number
 }
