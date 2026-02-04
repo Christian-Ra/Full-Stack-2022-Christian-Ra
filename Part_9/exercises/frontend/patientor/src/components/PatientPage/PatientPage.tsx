@@ -9,7 +9,7 @@ import OccupationalEntry from "../Entries/OccupationalEntry";
 import diagnosesService from "../../services/diagnoses";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
-// import { Box } from "@mui/material";  //Below import does not work for some reason
+import { Box } from "@mui/material";  //Below import does not work for some reason
 //* https://github.com/mui/material-ui/issues/43242   <--- issue link with fix
 //? import Box from "@mui/material/Box";
 
@@ -68,11 +68,11 @@ const PatientPage = ( ) => {
       {patient.entries.length > 0 && (
         <div>
           <h3>Entries:</h3>
-          {/* <Box sx={{p: 2, border: `1px solid grey`}} > */}
           {patient.entries.map(entry => (
+          <Box sx={{p: 2, border: `1px solid grey`}} >
               <EntryDetails entry={entry} />
+          </Box>
             ))}
-          {/* </Box> */}
       {patient.entries.some(entry => entry.diagnosisCodes) && (
         <ul>
           {patient.entries.flatMap(entry => entry.diagnosisCodes || []).map(code => (
