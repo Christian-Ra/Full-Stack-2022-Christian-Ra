@@ -1,6 +1,33 @@
-import { Gender, NewPatientEntry, Diagnosis} from "./types";
+import { Gender, NewPatientEntry, Diagnosis, HealthCheckRating, NewEntryData} from "./types";
 import { z } from "zod";
 
+export const NewEntryDiscriminator = z.discriminatedUnion('type', [
+    z.object({
+        type: z.literal('Hospital'),
+        discharge: z.object({
+            date: z.iso.date(),
+            criteria: z.string().min(1, 'Discharge criteria cannot be empty')
+        })
+    }),
+    z.object({
+        type: z.literal('OccupationalHealthcare'),
+        employerName: z.string().min(1, 'Employer name cannot be empty'),
+        sickLeave: z.object({
+            startDate: z.iso.date(),
+            endDate: z.iso.date()
+        }).optional()
+    }),
+    z.object({
+        type: z.literal('HealthCheck'),
+        healthCheckRating: z.enum(HealthCheckRating)
+    })
+]);
+
+export const NewEntrySchema = z.object({
+         description: z.string().min(1, 'Description cannot be empty'),
+        date: z.iso.date(),
+        specialist: z.string().min(1, 'Specialist cannot be empty'),})
+        .and(NewEntryDiscriminator);
 
 export const NewPatientSchema = z.object({
     name: z.string().min(1, 'Name cannot be empty'),
@@ -23,4 +50,8 @@ const toNewPatient = (object: unknown): NewPatientEntry => {
     return NewPatientSchema.parse(object);
 };
 
-export default { toNewPatient, parseDiagnosisCodes };
+const toNewEntry = (object: unknown): NewEntryData => {
+    return NewEntrySchema.parse(object);
+};
+
+export default { toNewPatient, toNewEntry, parseDiagnosisCodes };
