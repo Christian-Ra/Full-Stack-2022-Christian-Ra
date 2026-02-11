@@ -2,14 +2,14 @@ import { Gender, NewPatientEntry, Diagnosis, HealthCheckRating, NewEntryData} fr
 import { z } from "zod";
 
 export const NewEntryDiscriminator = z.discriminatedUnion('type', [
-    z.object({
+    z.strictObject({
         type: z.literal('Hospital'),
         discharge: z.object({
             date: z.iso.date(),
             criteria: z.string().min(1, 'Discharge criteria cannot be empty')
         })
     }),
-    z.object({
+    z.strictObject({
         type: z.literal('OccupationalHealthcare'),
         employerName: z.string().min(1, 'Employer name cannot be empty'),
         sickLeave: z.object({
@@ -17,13 +17,13 @@ export const NewEntryDiscriminator = z.discriminatedUnion('type', [
             endDate: z.iso.date()
         }).optional()
     }),
-    z.object({
+    z.strictObject({
         type: z.literal('HealthCheck'),
         healthCheckRating: z.enum(HealthCheckRating)
     })
 ]);
 
-export const NewEntrySchema = z.object({
+export const NewEntrySchema = z.strictObject({
          description: z.string().min(1, 'Description cannot be empty'),
         date: z.iso.date(),
         specialist: z.string().min(1, 'Specialist cannot be empty'),})
@@ -31,7 +31,7 @@ export const NewEntrySchema = z.object({
 
 export const NewPatientSchema = z.object({
     name: z.string().min(1, 'Name cannot be empty'),
-    dateOfBirth: z.string().date(),
+    dateOfBirth: z.iso.date(),
     ssn: z.string().min(1, 'SSN cannot be empty'),
     gender: z.enum(Gender),
     occupation: z.string().min(1, 'Occupation cannot be empty'),
