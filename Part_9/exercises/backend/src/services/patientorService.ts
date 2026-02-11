@@ -1,8 +1,9 @@
 import diagnosticData from '../data/diagnoses';
 import patientData from '../data/patients';
 import {v1 as uuid} from 'uuid';
+import  utils  from '../utils';
 
-import { Diagnosis, NonSensitivePatientData, Patient, NewPatientEntry } from '../types';
+import { Diagnosis, NonSensitivePatientData, Patient, NewPatientEntry, NewEntry } from '../types';
 
 const diagnoses: Diagnosis[] = diagnosticData;
 const patients: Patient[] = patientData;
@@ -40,6 +41,26 @@ const addPatient = (entry: NewPatientEntry): Patient => {
 
 };
 
+const addEntry = (entry: NewEntry, id: string): Patient => {
+    const patient = getPatientById(id);
+    const idForEntry = uuid();
+    const diagnosisCodes = utils.parseDiagnosisCodes(entry);
+    const entryWithId = {
+        id: idForEntry,
+        ...entry,
+        diagnosisCodes: diagnosisCodes
+    };
+    if (!patient) {
+        throw new Error('Patient not found');
+    }
+    const updatedPatient = {
+        ...patient,
+        entries: patient.entries.concat(entryWithId)
+    };
+    patients[patients.findIndex(p => p.id === id)] = updatedPatient;
+    return updatedPatient;
+};
+
 export default {
-    getDiagnosticData, getPatientData, addPatient, getPatientById
+    getDiagnosticData, getPatientData, addPatient, getPatientById, addEntry
 };

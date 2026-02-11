@@ -3,7 +3,7 @@ import express, {Response, Request, NextFunction} from 'express';
 import {z} from 'zod';
 import { NewPatientSchema } from '../utils';
 import patientorService from '../services/patientorService';
-import { NewPatientEntry, Patient } from '../types';
+import { NewPatientEntry, Patient, NewEntry } from '../types';
 
 const router = express.Router();
 
@@ -40,6 +40,14 @@ const errorMiddleware = ( error: unknown, _req: Request, _res: Response, next: N
 router.post('/', newPatientParser, (req: Request<unknown, unknown, NewPatientEntry>, res: Response<Patient>) => {
     const addedPatient = patientorService.addPatient(req.body);
     res.json(addedPatient);
+});
+
+router.post('/:id/entries', (req: Request<unknown, unknown, NewEntry>, res: Response<Patient>) => {
+    // Implementation for adding a new entry to a patient would go here
+    const { id } = req.params as { id: string };
+    const newEntry = req.body;
+    const updatedPatient = patientorService.addEntry(newEntry, id);
+    res.json(updatedPatient);
 });
 
 // router.post('/', (req, res) => { 
