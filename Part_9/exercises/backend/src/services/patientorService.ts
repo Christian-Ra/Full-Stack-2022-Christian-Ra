@@ -3,7 +3,7 @@ import patientData from '../data/patients';
 import {v1 as uuid} from 'uuid';
 import  utils  from '../utils';
 
-import { Diagnosis, NonSensitivePatientData, Patient, NewPatientEntry, NewEntry } from '../types';
+import { Diagnosis, NonSensitivePatientData, Patient, NewPatientEntry, NewEntry, Entry } from '../types';
 
 const diagnoses: Diagnosis[] = diagnosticData;
 const patients: Patient[] = patientData;
@@ -33,7 +33,8 @@ const addPatient = (entry: NewPatientEntry): Patient => {
     const id: string = uuid();
     const newPatient = {
         id: id,
-        ...entry 
+        ...entry,
+        entries: []
     };
 
     patients.push(newPatient);
@@ -41,7 +42,7 @@ const addPatient = (entry: NewPatientEntry): Patient => {
 
 };
 
-const addEntry = (entry: NewEntry, id: string): Patient => {
+const addEntry = (entry: NewEntry, id: string): Entry => {
     const patient = getPatientById(id);
     const idForEntry = uuid();
     const diagnosisCodes = utils.parseDiagnosisCodes(entry);
@@ -55,10 +56,10 @@ const addEntry = (entry: NewEntry, id: string): Patient => {
     }
     const updatedPatient = {
         ...patient,
-        entries: patient.entries.concat(entryWithId)
+        entries: [...patient.entries, entryWithId]
     };
     patients[patients.findIndex(p => p.id === id)] = updatedPatient;
-    return updatedPatient;
+    return entryWithId;
 };
 
 export default {

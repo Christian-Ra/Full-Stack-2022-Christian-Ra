@@ -23,7 +23,8 @@ export const NewEntryDiscriminator = z.discriminatedUnion('type', [
     })
 ]);
 
-export const NewEntrySchema = z.strictObject({
+//not sure how to implement diagnosis parser with zod schema, so letting it not be set to a strict object
+export const NewEntrySchema = z.object({
          description: z.string().min(1, 'Description cannot be empty'),
         date: z.iso.date(),
         specialist: z.string().min(1, 'Specialist cannot be empty'),})
@@ -35,7 +36,7 @@ export const NewPatientSchema = z.object({
     ssn: z.string().min(1, 'SSN cannot be empty'),
     gender: z.enum(Gender),
     occupation: z.string().min(1, 'Occupation cannot be empty'),
-    entries: z.array(z.any())
+    // entries: z.array(z.any())
 });
 
 const parseDiagnosisCodes = (object: unknown): Array<Diagnosis['code']> => {
